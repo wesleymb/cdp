@@ -2,11 +2,10 @@ import datetime
 from dateutil.relativedelta import relativedelta
 
 class contrato:
-	def __init__(self, numeroDeProcesso, assinatura, gestor,  fiscais, vencimento, status):
+	def __init__(self, numeroDeProcesso, dataAssinatura, gestor, vencimento, status):
 		self.numeroDeProcesso = numeroDeProcesso
-		self.assinatura = assinatura
+		self.dataAssinatura = dataAssinatura
 		self.gestor = gestor
-		self.fiscais = fiscais
 		self.vencimento = vencimento
 		self.status = status
 
@@ -25,9 +24,8 @@ if __name__ == "__main__":
 	
 	teste = contrato(
 		numeroDeProcesso="E-17/0000/0000/0000",
-		assinatura= datetime.date(2020,3,5),
+		dataAssinatura= datetime.date(2020,3,5),
 		gestor= "Wesley",
-		fiscais= ["Bruno", "Wesley", "Marco"],
 		vencimento= datetime.date(2020,12,12),
 		status= "ATIVO"
 		)
