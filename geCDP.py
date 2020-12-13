@@ -5,12 +5,16 @@ def criarBanco():
     arquivos = os.listdir()
     if 'bd_cdp.db' not in arquivos:
         sqlite3.connect('bd_cdp.db')
+        
         criarTabelaContrato()
         criarTabelaFiscal()
         criarTabelaServidor()
+        criarTabelaPagamento()
+        
         inserMassaDeDadosContrato()
         inserMassaDeDadosServidor()
         inserMassaDeDadosFiscal()
+        inserMassaDeDadosPagamento()
 
 def conectar():
     conecicao = sqlite3.connect('bd_cdp.db')
@@ -43,18 +47,26 @@ def criarTabelaServidor():
         PRIMARY KEY (id)
         )""")
 
+def criarTabelaPagamento():
+    sql("""CREATE TABLE IF NOT EXISTS PAGAMENTO(
+        id INTEGER,
+        idContrato INT, 
+        dataDePagamento date,  
+        valor NUMERIC,
+        PRIMARY KEY (id),
+        FOREIGN KEY (idContrato) REFERENCES CONTRATO(id)
+        )""")
+
 
 def criarTabelaFiscal():
     sql("""CREATE TABLE IF NOT EXISTS FISCAl(
         id INTEGER,
-        idServidor, 
-        idContrato INT, 
+        idContrato INT,
+        idServidor INT, 
         PRIMARY KEY (id),
         FOREIGN KEY (idContrato) REFERENCES CONTRATO(id),
         FOREIGN KEY (idServidor) REFERENCES SERVIDOR(id)
         )""")
-
-
 
 
 def queryTabela(tabela):
@@ -79,11 +91,14 @@ def inserMassaDeDadosFiscal():
     sql("""INSERT INTO FISCAl (idServidor, idContrato) 
         VALUES(1,1)""")
 
+def inserMassaDeDadosPagamento():
+    sql("""INSERT INTO PAGAMENTO (idContrato, dataDePagamento, valor) 
+        VALUES(1,"2020-12-13",500.10)""")
 
 if __name__ == "__main__":
     criarBanco()
     dado1 = queryTabela(tabela="SERVIDOR")
     dado2 = queryTabela(tabela="CONTRATO")
     dado3 = queryTabela(tabela="FISCAL")
-    
-    print(dado1,dado2,dado3)
+    dado4 = queryTabela(tabela="PAGAMENTO")
+    print(dado1,dado2,dado3,dado4)
