@@ -53,6 +53,7 @@ def criarTabelaPagamento():
         idContrato INT, 
         dataDePagamento date,  
         valor NUMERIC,
+        status text,
         PRIMARY KEY (id),
         FOREIGN KEY (idContrato) REFERENCES CONTRATO(id)
         )""")
@@ -81,7 +82,11 @@ def queryTabela(tabela):
 
 def inserMassaDeDadosServidor():
     sql("""INSERT INTO SERVIDOR (nome, idFuncional) 
-        VALUES("Bruno","555555-5")""")
+        VALUES("Wesley","555555-5")""")
+    sql("""INSERT INTO SERVIDOR (nome, idFuncional) 
+        VALUES("Bruno","222222-2")""")
+    sql("""INSERT INTO SERVIDOR (nome, idFuncional) 
+        VALUES("Marco","333333-3")""")
 
 def inserMassaDeDadosContrato():
     sql("""INSERT INTO CONTRATO (numeroDeProcesso, dataAssinatura, vencimento, idServidorGestor, status) 
@@ -90,15 +95,50 @@ def inserMassaDeDadosContrato():
 def inserMassaDeDadosFiscal():
     sql("""INSERT INTO FISCAl (idServidor, idContrato) 
         VALUES(1,1)""")
+    sql("""INSERT INTO FISCAl (idServidor, idContrato) 
+        VALUES(2,1)""")
 
 def inserMassaDeDadosPagamento():
     sql("""INSERT INTO PAGAMENTO (idContrato, dataDePagamento, valor) 
-        VALUES(1,"2020-12-13",500.10)""")
+        VALUES(1,"2020-12-13",500.10, "PAGO")""")
+
+
+def queryTabelaServidorComContrato():
+    c,connection = conectar()
+    sql = '''SELECT SERVIDOR.NOME 
+    FROM CONTRATO
+    INNER JOIN SERVIDOR on CONTRATO.idServidorGestor = SERVIDOR.id
+    '''
+    lista = []
+    for linha in c.execute(sql):
+        lista.append(linha)
+    connection.close()
+    return lista
+
+def queryTabelaFiscalComContrato():
+    c,connection = conectar()
+    sql = '''SELECT CONTRATO.numeroDeProcesso, SERVIDOR.NOME  
+    FROM FISCAL
+    INNER JOIN SERVIDOR on FISCAL.idServidor = SERVIDOR.id
+    INNER JOIN CONTRATO on CONTRATO.id = FISCAL.idContrato
+    '''
+    lista = []
+    for linha in c.execute(sql):
+        lista.append(linha)
+    connection.close()
+    return lista
+    
 
 if __name__ == "__main__":
     criarBanco()
-    dado1 = queryTabela(tabela="SERVIDOR")
-    dado2 = queryTabela(tabela="CONTRATO")
-    dado3 = queryTabela(tabela="FISCAL")
-    dado4 = queryTabela(tabela="PAGAMENTO")
-    print(dado1,dado2,dado3,dado4)
+    # dado1 = queryTabela(tabela="SERVIDOR")
+    # dado2 = queryTabela(tabela="CONTRATO")
+    # dado3 = queryTabela(tabela="FISCAL")
+    # dado4 = queryTabela(tabela="PAGAMENTO")
+    # dado5 = queryTabelaFiscalComContrato()
+    
+    # print("Serivores:\n",dado1)
+    # print("Contratos:\n",dado2)
+    # print("Fiscais:\n",dado3)
+    # print("Pagamento:\n",dado4)
+    # print(dado5)
