@@ -30,8 +30,12 @@ def sql(comando):
 def criarTabelaContrato():
     sql("""CREATE TABLE IF NOT EXISTS CONTRATO(
         id INTEGER,
+        contrato text,
         numeroDeProcesso text, 
+        objeto text,
+        empresa text,
         dataAssinatura date, 
+        dataTermino date,
         vencimento date, 
         idServidorGestor int, 
         status text,
@@ -89,8 +93,14 @@ def inserMassaDeDadosServidor():
         VALUES("Marco","333333-3")""")
 
 def inserMassaDeDadosContrato():
-    sql("""INSERT INTO CONTRATO (numeroDeProcesso, dataAssinatura, vencimento, idServidorGestor, status) 
-        VALUES("E-17/0000/0000/0000","2020-3-5","2020-3-10", 1,"ATIVO")""")
+    sql("""INSERT INTO CONTRATO (contrato, numeroDeProcesso, objeto, empresa, dataAssinatura, dataTermino, vencimento, idServidorGestor, status) 
+        VALUES("006/17","E-17/0000/0000/0000","Central telefonica","Ra telecom","2020-3-5","2021-3-5","2020-3-10", 1,"ATIVO")""")
+    
+    sql("""INSERT INTO CONTRATO (contrato, numeroDeProcesso, objeto, empresa, dataAssinatura, dataTermino, vencimento, idServidorGestor, status) 
+        VALUES("006/17","E-17/0000/0000/0000","Computadores","SIMPRESS","2020-3-5","2021-3-5","2020-3-10", 2,"ATIVO")""")
+
+    sql("""INSERT INTO CONTRATO (contrato, numeroDeProcesso, objeto, empresa, dataAssinatura, dataTermino, vencimento, idServidorGestor, status) 
+        VALUES("006/17","E-17/0000/0000/0000","Impressoras","CHADA","2020-3-5","2021-3-5","2020-3-10", 3,"ATIVO")""")
 
 def inserMassaDeDadosFiscal():
     sql("""INSERT INTO FISCAl (idServidor, idContrato) 
@@ -99,23 +109,24 @@ def inserMassaDeDadosFiscal():
         VALUES(2,1)""")
 
 def inserMassaDeDadosPagamento():
-    sql("""INSERT INTO PAGAMENTO (idContrato, dataDePagamento, valor) 
+    sql("""INSERT INTO PAGAMENTO (idContrato, dataDePagamento, valor, status) 
         VALUES(1,"2020-12-13",500.10, "PAGO")""")
 
 
-def queryTabelaServidorComContrato():
+def queryTabelaServidorComContrato(servidor):
     c,connection = conectar()
     sql = '''SELECT SERVIDOR.NOME 
     FROM CONTRATO
     INNER JOIN SERVIDOR on CONTRATO.idServidorGestor = SERVIDOR.id
-    '''
+    WHERE SERVIDOR.id = {servidor}
+    '''.format(servidor=servidor)
     lista = []
     for linha in c.execute(sql):
         lista.append(linha)
     connection.close()
     return lista
 
-def queryTabelaFiscalComContrato():
+def queryTabelaGestorComContrato():
     c,connection = conectar()
     sql = '''SELECT CONTRATO.numeroDeProcesso, SERVIDOR.NOME  
     FROM FISCAL
@@ -132,13 +143,14 @@ def queryTabelaFiscalComContrato():
 if __name__ == "__main__":
     criarBanco()
     # dado1 = queryTabela(tabela="SERVIDOR")
-    # dado2 = queryTabela(tabela="CONTRATO")
+    dado2 = queryTabela(tabela="CONTRATO")
     # dado3 = queryTabela(tabela="FISCAL")
     # dado4 = queryTabela(tabela="PAGAMENTO")
-    # dado5 = queryTabelaFiscalComContrato()
-    
+    # dado5 = queryTabelaGestorComContrato()
+    dado = queryTabelaServidorComContrato(servidor=1)
+    print(dado)
     # print("Serivores:\n",dado1)
-    # print("Contratos:\n",dado2)
+    print("Contratos:\n",dado2)
     # print("Fiscais:\n",dado3)
     # print("Pagamento:\n",dado4)
     # print(dado5)
