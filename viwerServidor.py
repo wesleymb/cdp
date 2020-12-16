@@ -1,5 +1,6 @@
 import wx
 import geCDP
+import viwerContrato
 
 LISTA_DE_FRAMES= []
 def contador_de_frames(frame):
@@ -49,6 +50,9 @@ class viwerCdp(object):
         self.button_alterar = wx.Button(self.panel, wx.ID_ANY, 'Altera', (1050, 65),size=(100,-1))
         self.button_excluir = wx.Button(self.panel, wx.ID_ANY, 'Excluir', (1050, 95),size=(100,-1))
 
+        self.button_novo.Bind(wx.EVT_BUTTON, self.abrirviwerContrato)
+
+
         self.carregaDadosContratos()
 
         self.frame.Show()
@@ -80,6 +84,9 @@ class viwerCdp(object):
             self.index += 1
 
 
+
+    def abrirviwerContrato(self,event):
+        viwerContrato.viwerContrato(statusEntrada='NOVO')
 
 
 

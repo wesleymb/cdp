@@ -25,7 +25,7 @@ if __name__ == "__main__":
 	teste = contrato(
 		numeroDeProcesso="E-17/0000/0000/0000",
 		dataAssinatura= datetime.date(2020,3,5),
-		gestor= "Wesley",
+		gestor= 1,
 		vencimento= datetime.date(2020,12,12),
 		status= "ATIVO"
 		)
