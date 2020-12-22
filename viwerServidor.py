@@ -1,6 +1,7 @@
 import wx
 import geCDP
 import viwerContrato
+import modelContrato
 
 LISTA_DE_FRAMES= []
 def contador_de_frames(frame):
@@ -62,15 +63,16 @@ class viwerCdp(object):
         dados = geCDP.queryTabela(tabela="CONTRATO")
         # print(dados)
         for dado in dados:
-            contrato = dado[1]
-            processo = dado[2]
-            objeto = dado[3]
-            empresa = dado[4]
-            inicio = dado[5] 
-            fimDaVigencia = dado[6]
-            vencimento = dado[7]
-            gestor = geCDP.queryTabelaServidorComContrato(servidor=dado[8])
-            status = dado[9]
+            contratoQuery = modelContrato.contrato(listaDedadosContrato=dado)
+            contrato = contratoQuery.contrato
+            processo = contratoQuery.numeroDeProcesso
+            objeto = contratoQuery.objeto
+            empresa = contratoQuery.empresa
+            inicio = contratoQuery.dataAssinatura 
+            fimDaVigencia = contratoQuery.dataTermino
+            vencimento = contratoQuery.vencimento
+            gestor = geCDP.queryTabelaServidorComContrato(servidor=contratoQuery.idServidorGestor)
+            status = contratoQuery.status
 
             self.listaDeContratos.InsertStringItem(self.index, contrato)
             self.listaDeContratos.SetStringItem(self.index, 1, processo)
