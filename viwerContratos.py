@@ -36,16 +36,18 @@ class viwerCdp(object):
         self.frame.SetMenuBar(self.menu_bar)
 
 
-        self.listaDeContratos = wx.ListCtrl(self.panel,style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_HRULES|wx.LC_AUTOARRANGE,size=(1000,450), pos=(20,40))      
-        self.listaDeContratos.InsertColumn(0,"Contrato",width=100)
-        self.listaDeContratos.InsertColumn(1,"Processo",width=100)
-        self.listaDeContratos.InsertColumn(2,"Objeto",width=200)
-        self.listaDeContratos.InsertColumn(3,"Empresa",width=100)
-        self.listaDeContratos.InsertColumn(4,"Início",width=100)
-        self.listaDeContratos.InsertColumn(5,"Fim da vigencia",width=100)
-        self.listaDeContratos.InsertColumn(6,"Vencimento",width=100)
-        self.listaDeContratos.InsertColumn(7,"Gestor",width=100)
-        self.listaDeContratos.InsertColumn(8,"Status",width=100)
+        self.listaDeContratos = wx.ListCtrl(self.panel,style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_HRULES|wx.LC_AUTOARRANGE,size=(1025,450), pos=(20,40))      
+        self.listaDeContratos.InsertColumn(0,"ID",width=50)
+        self.listaDeContratos.InsertColumn(1,"Contrato",width=100)
+        self.listaDeContratos.InsertColumn(2,"Processo",width=100)
+        self.listaDeContratos.InsertColumn(3,"Objeto",width=200)
+        self.listaDeContratos.InsertColumn(4,"Empresa",width=100)
+        self.listaDeContratos.InsertColumn(5,"Início",width=100)
+        self.listaDeContratos.InsertColumn(6,"Fim da vigencia",width=100)
+        self.listaDeContratos.InsertColumn(7,"Vencimento",width=100)
+        self.listaDeContratos.InsertColumn(8,"Gestor",width=100)
+        self.listaDeContratos.InsertColumn(9,"Status",width=70)
+        
 
         self.button_novo = wx.Button(self.panel, wx.ID_ANY, 'Novo', (1050, 40),size=(100,-1))
         self.button_alterar = wx.Button(self.panel, wx.ID_ANY, 'Altera', (1050, 65),size=(100,-1))
@@ -61,9 +63,10 @@ class viwerCdp(object):
 
     def carregaDadosContratos(self):
         dados = geCDP.queryTabela(tabela="CONTRATO")
-        # print(dados)
+        
         for dado in dados:
             contratoQuery = modelContrato.contrato(listaDedadosContrato=dado)
+            id = str(contratoQuery.id)
             contrato = contratoQuery.contrato
             processo = contratoQuery.numeroDeProcesso
             objeto = contratoQuery.objeto
@@ -72,24 +75,27 @@ class viwerCdp(object):
             fimDaVigencia = contratoQuery.dataTermino
             vencimento = contratoQuery.vencimento
             gestor = geCDP.queryTabelaServidorComContrato(servidor=contratoQuery.idServidorGestor)
+            
             status = contratoQuery.status
+            
 
-            self.listaDeContratos.InsertStringItem(self.index, contrato)
-            self.listaDeContratos.SetStringItem(self.index, 1, processo)
-            self.listaDeContratos.SetStringItem(self.index, 2, objeto)
-            self.listaDeContratos.SetStringItem(self.index, 3, empresa)
-            self.listaDeContratos.SetStringItem(self.index, 4, inicio)
-            self.listaDeContratos.SetStringItem(self.index, 5, fimDaVigencia)
-            self.listaDeContratos.SetStringItem(self.index, 6, vencimento)
-            self.listaDeContratos.SetStringItem(self.index, 7, gestor[0][0])
-            self.listaDeContratos.SetStringItem(self.index, 8, status)
+            self.listaDeContratos.InsertStringItem(self.index, id)
+            self.listaDeContratos.SetStringItem(self.index, 1, contrato)
+            self.listaDeContratos.SetStringItem(self.index, 2, processo)
+            self.listaDeContratos.SetStringItem(self.index, 3, objeto)
+            self.listaDeContratos.SetStringItem(self.index, 4, empresa)
+            self.listaDeContratos.SetStringItem(self.index, 5, inicio)
+            self.listaDeContratos.SetStringItem(self.index, 6, fimDaVigencia)
+            self.listaDeContratos.SetStringItem(self.index, 7, vencimento)
+            self.listaDeContratos.SetStringItem(self.index, 8, gestor[0])
+            self.listaDeContratos.SetStringItem(self.index, 9, status)
             self.index += 1
 
 
 
     def abrirviwerContrato(self,event):
-        viwerContrato.viwerContrato(statusEntrada='NOVO')
-
+        telaContrato = viwerContrato.viwerContrato(statusEntrada='NOVO')
+        contador_de_frames(telaContrato.frame)
 
 
     def fechar_todos_os_frames(self, event):

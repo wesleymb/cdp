@@ -82,7 +82,28 @@ def queryTabela(tabela):
         lista.append(linha)
     connection.close()
     return lista
+
+def queryTabelaComWhere(tabela,coluna,dado):
+    c,connection = conectar()
+    sql = """SELECT * FROM {tabela} WHERE {coluna} = '{dado}'""".format(tabela=tabela,coluna=coluna,dado=dado)
+    lista = []
+    for linha in c.execute(sql):
+        for dado in linha:
+            lista.append(dado)
+    connection.close()
+    return lista
     
+def queryNomeServidores():
+    c,connection = conectar()
+    sql = 'SELECT SERVIDOR.NOME FROM SERVIDOR'
+    lista = []
+    for linha in c.execute(sql):
+        for dado in linha:
+            lista.append(dado)
+    connection.close()
+    return sorted(lista)
+
+
 
 def inserMassaDeDadosServidor():
     sql("""INSERT INTO SERVIDOR (nome, idFuncional) 
@@ -122,7 +143,8 @@ def queryTabelaServidorComContrato(servidor):
     '''.format(servidor=servidor)
     lista = []
     for linha in c.execute(sql):
-        lista.append(linha)
+        for dado in linha:
+            lista.append(dado)
     connection.close()
     return lista
 
@@ -135,22 +157,13 @@ def queryTabelaGestorComContrato():
     '''
     lista = []
     for linha in c.execute(sql):
-        lista.append(linha)
+        for dado in linha:
+            lista.append(dado)
     connection.close()
     return lista
     
 
 if __name__ == "__main__":
     criarBanco()
-    # dado1 = queryTabela(tabela="SERVIDOR")
-    dado2 = queryTabela(tabela="CONTRATO")
-    # dado3 = queryTabela(tabela="FISCAL")
-    # dado4 = queryTabela(tabela="PAGAMENTO")
-    # dado5 = queryTabelaGestorComContrato()
-    dado = queryTabelaServidorComContrato(servidor=1)
-    print(dado)
-    # print("Serivores:\n",dado1)
-    print("Contratos:\n",dado2)
-    # print("Fiscais:\n",dado3)
-    # print("Pagamento:\n",dado4)
-    # print(dado5)
+    print(queryTabelaComWhere(tabela="SERVIDOR",coluna='NOME',dado='Wesley'))
+    
