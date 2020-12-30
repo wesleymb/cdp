@@ -1,6 +1,6 @@
 import wx
 import geCDP
-import viwerContrato
+import viwerNovoContrato
 import modelContrato
 
 LISTA_DE_FRAMES= []
@@ -36,7 +36,7 @@ class viwerCdp(object):
         self.frame.SetMenuBar(self.menu_bar)
 
 
-        self.listaDeContratos = wx.ListCtrl(self.panel,style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_HRULES|wx.LC_AUTOARRANGE,size=(1025,450), pos=(20,40))      
+        self.listaDeContratos = wx.ListCtrl(self.panel,style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_HRULES|wx.LC_AUTOARRANGE,size=(1055,450), pos=(20,40))      
         self.listaDeContratos.InsertColumn(0,"ID",width=50)
         self.listaDeContratos.InsertColumn(1,"Contrato",width=100)
         self.listaDeContratos.InsertColumn(2,"Processo",width=100)
@@ -46,22 +46,31 @@ class viwerCdp(object):
         self.listaDeContratos.InsertColumn(6,"Fim da vigencia",width=100)
         self.listaDeContratos.InsertColumn(7,"Vencimento",width=100)
         self.listaDeContratos.InsertColumn(8,"Gestor",width=100)
-        self.listaDeContratos.InsertColumn(9,"Status",width=70)
+        self.listaDeContratos.InsertColumn(9,"Status",width=100)
         
 
-        self.button_novo = wx.Button(self.panel, wx.ID_ANY, 'Novo', (1050, 40),size=(100,-1))
-        self.button_alterar = wx.Button(self.panel, wx.ID_ANY, 'Altera', (1050, 65),size=(100,-1))
-        self.button_excluir = wx.Button(self.panel, wx.ID_ANY, 'Excluir', (1050, 95),size=(100,-1))
+        self.button_novo = wx.Button(self.panel, wx.ID_ANY, 'Novo', (1080, 40),size=(100,-1))
+        self.buttonGerenciar = wx.Button(self.panel, wx.ID_ANY, 'Gerenciar', (1080, 65),size=(100,-1))
+        self.button_atulizar = wx.Button(self.panel, wx.ID_ANY, 'Atulizar', (1080, 95),size=(100,-1))
+        
+        self.button_excluir = wx.Button(self.panel, wx.ID_ANY, 'Excluir', (1080, 175),size=(100,-1))
 
-        self.button_novo.Bind(wx.EVT_BUTTON, self.abrirviwerContrato)
 
+        self.button_novo.Bind(wx.EVT_BUTTON, self.abrirviwerNovoContrato)
+        self.button_excluir.Bind(wx.EVT_BUTTON, self.exluirContrato)
+        self.button_atulizar.Bind(wx.EVT_BUTTON, self.atulizarLista)
 
         self.carregaDadosContratos()
 
         self.frame.Show()
         self.frame.Centre()
 
+    def atulizarLista(self,event):
+        self.carregaDadosContratos()
+    
     def carregaDadosContratos(self):
+        self.listaDeContratos.DeleteAllItems()
+        self.index = 0
         dados = geCDP.queryTabela(tabela="CONTRATO")
         
         for dado in dados:
@@ -74,7 +83,7 @@ class viwerCdp(object):
             inicio = contratoQuery.dataAssinatura 
             fimDaVigencia = contratoQuery.dataTermino
             vencimento = contratoQuery.vencimento
-            gestor = geCDP.queryTabelaServidorComContrato(servidor=contratoQuery.idServidorGestor)
+            gestor = contratoQuery.gestor
             
             status = contratoQuery.status
             
@@ -87,15 +96,26 @@ class viwerCdp(object):
             self.listaDeContratos.SetStringItem(self.index, 5, inicio)
             self.listaDeContratos.SetStringItem(self.index, 6, fimDaVigencia)
             self.listaDeContratos.SetStringItem(self.index, 7, vencimento)
-            self.listaDeContratos.SetStringItem(self.index, 8, gestor[0])
+            self.listaDeContratos.SetStringItem(self.index, 8, gestor)
             self.listaDeContratos.SetStringItem(self.index, 9, status)
             self.index += 1
 
 
 
-    def abrirviwerContrato(self,event):
-        telaContrato = viwerContrato.viwerContrato(statusEntrada='NOVO')
+    def abrirviwerNovoContrato(self,event):
+        telaContrato = viwerNovoContrato.viwerNovoContrato()
         contador_de_frames(telaContrato.frame)
+
+    def exluirContrato(self,event):
+        item = self.listaDeContratos.GetFocusedItem()
+        
+        if item != -1:
+            dlg_juntar_pdf_em_massa = wx.MessageDialog(None , "Tem certeza que quer excluir esse processo?", "Juntar",wx.YES_NO | wx.ICON_WARNING)
+            result = dlg_juntar_pdf_em_massa.ShowModal()
+            if result == wx.ID_YES: 
+                idContrato = self.listaDeContratos.GetItem(itemIdx=item,col=0).GetText()
+                geCDP.excluirContrato(idContrato=idContrato)
+                self.carregaDadosContratos()    
 
 
     def fechar_todos_os_frames(self, event):
@@ -104,6 +124,9 @@ class viwerCdp(object):
                 frame.Destroy()
             except:
                 continue
+
+    
+
 
 if __name__ == '__main__':
     app = wx.App()

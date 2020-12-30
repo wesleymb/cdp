@@ -1,4 +1,5 @@
 import datetime
+import geCDP
 from dateutil.relativedelta import relativedelta
 
 
@@ -18,8 +19,14 @@ class contrato:
 		self.vencimento = self.listaDedadosContrato[7]
 		self.idServidorGestor = self.listaDedadosContrato[8]
 		self.status = self.listaDedadosContrato[9]
-
-
+		
+		if self.idServidorGestor != None:
+			gestor = geCDP.queryTabelaServidorComContrato(servidor = self.idServidorGestor)
+			self.gestor = gestor[0]
+		else:
+			self.idServidorGestor = ''
+			self.gestor = ''
+	
 	def gerarVencimentos(self):
 
 		vencimento = datetime.datetime.strptime(self.vencimento,"%Y-%m-%d").date()
@@ -36,7 +43,7 @@ if __name__ == "__main__":
 	listaDeDados = ['1','006/17',"E-17/0000/0000/0000",'impressora A3','Chada',"2020-12-22","2021-12-22","2021-01-10",'1','ATIVO']
 	contratoTeste = contrato(listaDedadosContrato=listaDeDados)
 	
-	# # contratoTeste.gerarVencimentos()
+	print(contratoTeste.idServidorGestor)
 	
 	# vencimentos = contratoTeste.gerarVencimentos()
 	# for dia in vencimentos:

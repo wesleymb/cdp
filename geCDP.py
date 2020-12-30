@@ -16,6 +16,8 @@ def criarBanco():
         inserMassaDeDadosFiscal()
         inserMassaDeDadosPagamento()
 
+        print("Banco Criado com sucesso.")
+
 def conectar():
     conecicao = sqlite3.connect('bd_cdp.db')
     cursor = conecicao.cursor()
@@ -127,7 +129,7 @@ def inserMassaDeDadosFiscal():
     sql("""INSERT INTO FISCAl (idServidor, idContrato) 
         VALUES(1,1)""")
     sql("""INSERT INTO FISCAl (idServidor, idContrato) 
-        VALUES(2,1)""")
+        VALUES(2,2)""")
 
 def inserMassaDeDadosPagamento():
     sql("""INSERT INTO PAGAMENTO (idContrato, dataDePagamento, valor, status) 
@@ -161,9 +163,28 @@ def queryTabelaGestorComContrato():
             lista.append(dado)
     connection.close()
     return lista
-    
+
+def inserNovoContrato(contrato,numeroDeProcesso,objeto,empresa,dataAssinatura,dataTermino,vencimento,status):
+    sql("""INSERT INTO CONTRATO (contrato, numeroDeProcesso, objeto, empresa, dataAssinatura, dataTermino, vencimento, status)
+        VALUES("{contrato}","{numeroDeProcesso}","{objeto}","{empresa}","{dataAssinatura}","{dataTermino}","{vencimento}","{status}")"""
+        .format(contrato = contrato,
+        numeroDeProcesso = numeroDeProcesso,
+        objeto = objeto,
+        empresa = empresa,
+        dataAssinatura = dataAssinatura,
+        dataTermino = dataTermino,
+        vencimento = vencimento,
+        status = status
+        ))
+
+def excluirContrato(idContrato):
+    sql("""DELETE FROM CONTRATO WHERE ID = {idContrato}""".format(idContrato=idContrato))
+    sql("""DELETE FROM FISCAL WHERE FISCAL.idContrato = {idContrato}""".format(idContrato=idContrato))
+    sql("""DELETE FROM PAGAMENTO WHERE PAGAMENTO.idContrato = {idContrato}""".format(idContrato=idContrato))
 
 if __name__ == "__main__":
     criarBanco()
-    print(queryTabelaComWhere(tabela="SERVIDOR",coluna='NOME',dado='Wesley'))
-    
+    # inserMassaDeDadosFiscal()
+    # sql("""DELETE FROM fiscal WHERE fiscal.idContrato = 2""")
+    # x = queryTabela(tabela="PAGAMENTO")
+    # print(x)
