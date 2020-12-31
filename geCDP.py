@@ -90,11 +90,20 @@ def queryTabelaComWhere(tabela,coluna,dado):
     sql = """SELECT * FROM {tabela} WHERE {coluna} = '{dado}'""".format(tabela=tabela,coluna=coluna,dado=dado)
     lista = []
     for linha in c.execute(sql):
-        for dado in linha:
-            lista.append(dado)
+        lista.append(linha)
     connection.close()
     return lista
-    
+
+def queryTabelaComWhereLike(tabela,coluna,dado):
+    c,connection = conectar()
+    sql = """SELECT * FROM {tabela} WHERE {coluna} LIKE '{dado}%'""".format(tabela=tabela,coluna=coluna,dado=dado)
+    lista = []
+    for linha in c.execute(sql):
+        lista.append(linha)
+    connection.close()
+    return lista    
+
+
 def queryNomeServidores():
     c,connection = conectar()
     sql = 'SELECT SERVIDOR.NOME FROM SERVIDOR'
@@ -127,9 +136,13 @@ def inserMassaDeDadosContrato():
 
 def inserMassaDeDadosFiscal():
     sql("""INSERT INTO FISCAl (idServidor, idContrato) 
-        VALUES(1,1)""")
+        VALUES(2,1)""")
+    
     sql("""INSERT INTO FISCAl (idServidor, idContrato) 
-        VALUES(2,2)""")
+        VALUES(3,1)""")
+    
+    sql("""INSERT INTO FISCAl (idServidor, idContrato) 
+        VALUES(1,2)""")
 
 def inserMassaDeDadosPagamento():
     sql("""INSERT INTO PAGAMENTO (idContrato, dataDePagamento, valor, status) 
@@ -177,14 +190,39 @@ def inserNovoContrato(contrato,numeroDeProcesso,objeto,empresa,dataAssinatura,da
         status = status
         ))
 
+def inserNovoFiscal(idServidor,idContrato):
+    sql("""INSERT INTO FISCAl (idServidor, idContrato) VALUES({idServidor},{idContrato})""".format(idServidor=idServidor,idContrato=idContrato))
+        
+def excluirFiscal(idContrato,idServidor):
+    sql("""DELETE FROM FISCAL WHERE FISCAL.idContrato = {idContrato} AND FISCAL.idServidor = {idServidor}"""
+    .format(idContrato=idContrato,idServidor=idServidor))
+
+
 def excluirContrato(idContrato):
     sql("""DELETE FROM CONTRATO WHERE ID = {idContrato}""".format(idContrato=idContrato))
     sql("""DELETE FROM FISCAL WHERE FISCAL.idContrato = {idContrato}""".format(idContrato=idContrato))
     sql("""DELETE FROM PAGAMENTO WHERE PAGAMENTO.idContrato = {idContrato}""".format(idContrato=idContrato))
 
+def altulizarContrato(contrato,numeroDeProcesso,objeto,empresa,dataAssinatura,dataTermino,vencimento,idServidorGestor,status, idContrato):
+        sql("""UPDATE CONTRATO SET  
+        contrato = "{contrato}", numeroDeProcesso = "{numeroDeProcesso}", objeto = "{objeto}", empresa = "{empresa}", dataAssinatura = "{dataAssinatura}", dataTermino = "{dataTermino}", vencimento = "{vencimento}", idServidorGestor = {idServidorGestor},status = "{status}" WHERE id = {idContrato}"""
+        .format(contrato = contrato,
+        numeroDeProcesso = numeroDeProcesso,
+        objeto = objeto,
+        empresa = empresa,
+        dataAssinatura = dataAssinatura,
+        dataTermino = dataTermino,
+        vencimento = vencimento,
+        idServidorGestor=idServidorGestor,
+        status = status,
+        idContrato=idContrato
+        ))
+
+
 if __name__ == "__main__":
     criarBanco()
     # inserMassaDeDadosFiscal()
-    # sql("""DELETE FROM fiscal WHERE fiscal.idContrato = 2""")
-    # x = queryTabela(tabela="PAGAMENTO")
-    # print(x)
+    x = queryTabelaComWhereLike(tabela='CONTRATO',coluna='OBJETO',dado='CENT')
+    # x = queryTabela(tabela="SERVIDOR")
+    # x = queryTabelaServidorComContrato(servidor =  2)
+    print(x)

@@ -21,6 +21,9 @@ class viwerNovoContrato(object):
         self.index = 0
         self.statusbar =  self.frame.CreateStatusBar(1)
 
+        self.icon = wx.Icon(wx.Image('icon.png',wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+        self.frame.SetIcon(self.icon)
+
         wx.StaticBox(self.panel, wx.ID_ANY, 'Dados do Contrato', (15, 5), size=(500, 600))
 
         wx.StaticText(self.panel, wx.ID_ANY, "Contrato", (25, 25))
