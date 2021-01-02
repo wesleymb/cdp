@@ -3,6 +3,8 @@ import geCDP
 import viwerNovoContrato
 import modelContrato
 import viwerGerenciar
+import viwerServidores
+import viwerRelatorioServidor
 
 LISTA_DE_FRAMES= []
 def contador_de_frames(frame):
@@ -29,18 +31,23 @@ class viwerCdp(object):
         self.frame.SetIcon(self.icon)
 
         self.menu_arquivo = wx.Menu()
-        self.aba_novo_contrato = self.menu_arquivo.Append(wx.ID_ANY, "Novo Contrato", "Novo Contrato")
+        self.abaNovoContrato = self.menu_arquivo.Append(wx.ID_ANY, "Novo Contrato", "Novo Contrato")
+        self.abaGerenciarServidores = self.menu_arquivo.Append(wx.ID_ANY, "Gerenciar servidores", "Gerenciar servidores")
 
+        self.menuRelatorio = wx.Menu()
+        self.abaRelatorioServidor = self.menuRelatorio.Append(wx.ID_ANY, "Relatório servidor", "Relatório servidor")
 
         self.menu_bar = wx.MenuBar()
         self.menu_bar.Append(self.menu_arquivo,"Arquivo")
+        self.menu_bar.Append(self.menuRelatorio,"Relatórios")
         self.frame.SetMenuBar(self.menu_bar)
 
 
         wx.StaticText(self.panel, wx.ID_ANY, "Filtra", (25, 25))
-        self.txtFiltro = wx.TextCtrl(self.panel, wx.ID_ANY,"", (60, 25),size=(500, -1))
+        self.txtFiltro = wx.TextCtrl(self.panel, wx.ID_ANY,"", (60, 25),size=(500, -1),style=wx.TE_PROCESS_ENTER)
+        self.txtFiltro.Bind(wx.EVT_TEXT_ENTER, self.carregaDadosContratosFiltrados)
 
-        self.comboOpcoes = ['ID','Contrato','Processo','Processo','Objeto','Empresa']
+        self.comboOpcoes = ['ID','Contrato','Processo','Objeto','Empresa']
 
         self.comboFiltro = wx.ComboBox(self.panel, wx.ID_ANY, pos = (575,25), choices = self.comboOpcoes, style=wx.CB_READONLY)
 
@@ -53,17 +60,22 @@ class viwerCdp(object):
         self.listaDeContratos.InsertColumn(3,"Objeto",width=200)
         self.listaDeContratos.InsertColumn(4,"Empresa",width=100)
         self.listaDeContratos.InsertColumn(5,"Início",width=100)
-        self.listaDeContratos.InsertColumn(6,"Fim da vigencia",width=100)
+        self.listaDeContratos.InsertColumn(6,"Fim da vigência",width=100)
         self.listaDeContratos.InsertColumn(7,"Vencimento",width=100)
         self.listaDeContratos.InsertColumn(8,"Gestor",width=100)
         self.listaDeContratos.InsertColumn(9,"Status",width=100)
         
 
-        self.button_novo = wx.Button(self.panel, wx.ID_ANY, 'Novo', (1080, 60),size=(100,-1))
-        self.buttonGerenciar = wx.Button(self.panel, wx.ID_ANY, 'Gerenciar', (1080, 85),size=(100,-1))
-        self.button_atulizar = wx.Button(self.panel, wx.ID_ANY, 'Atulizar', (1080, 115),size=(100,-1))
+        self.listaDeContratos.Bind(wx.EVT_LIST_ITEM_ACTIVATED,self.abrirviwerGerenciar)
+
+
+        self.button_novo = wx.Button(self.panel, wx.ID_ANY, 'Novo', (1090, 60),size=(100,-1))
+        self.buttonGerenciar = wx.Button(self.panel, wx.ID_ANY, 'Gerenciar', (1090, 85),size=(100,-1))
+        self.button_atulizar = wx.Button(self.panel, wx.ID_ANY, 'Atulizar', (1090, 115),size=(100,-1))
         
-        self.button_excluir = wx.Button(self.panel, wx.ID_ANY, 'Excluir', (1080, 195),size=(100,-1))
+        self.button_excluir = wx.Button(self.panel, wx.ID_ANY, 'Excluir', (1090, 160),size=(100,-1))
+
+        self.buttonFechar = wx.Button(self.panel, wx.ID_ANY, 'Fechar', (1090, 475),size=(100,-1))
 
 
         self.button_novo.Bind(wx.EVT_BUTTON, self.abrirviwerNovoContrato)
@@ -71,7 +83,12 @@ class viwerCdp(object):
         self.button_atulizar.Bind(wx.EVT_BUTTON, self.atulizarLista)
         self.buttonGerenciar.Bind(wx.EVT_BUTTON, self.abrirviwerGerenciar)
         self.buttonFiltar.Bind(wx.EVT_BUTTON, self.carregaDadosContratosFiltrados)
+        self.buttonFechar.Bind(wx.EVT_BUTTON, self.fechar)
 
+        self.frame.Bind(wx.EVT_MENU, self.abrirviwerServidores, self.abaGerenciarServidores)
+        self.frame.Bind(wx.EVT_MENU, self.abrirviwerNovoContrato, self.abaNovoContrato)
+        self.frame.Bind(wx.EVT_MENU, self.abrirviwerRelatorioServidor, self.abaRelatorioServidor)
+            
 
 
         self.carregaDadosContratos()
@@ -79,6 +96,11 @@ class viwerCdp(object):
         self.frame.Show()
         self.frame.Centre()
 
+    
+    def fechar(self,event):
+        self.frame.Destroy()
+    
+    
     def atulizarLista(self,event):
         self.carregaDadosContratos()
     
@@ -87,41 +109,40 @@ class viwerCdp(object):
         coluna = self.comboFiltro.GetValue()
         texto = self.txtFiltro.GetValue()
         
-        if coluna != '' and texto != '':
+        if coluna == "Processo":
+            coluna = "numeroDeProcesso"
 
-            self.listaDeContratos.DeleteAllItems()
-            self.index = 0
-            dados = geCDP.queryTabelaComWhereLike(tabela="CONTRATO",coluna=coluna,dado=texto)
+        self.listaDeContratos.DeleteAllItems()
+        self.index = 0
+        dados = geCDP.queryTabelaComWhereLike(tabela="CONTRATO",coluna=coluna,dado=texto)
+        
+        for dado in dados:
+            contratoQuery = modelContrato.contrato(listaDedadosContrato=dado)
+            id = str(contratoQuery.id)
+            contrato = contratoQuery.contrato
+            processo = contratoQuery.numeroDeProcesso
+            objeto = contratoQuery.objeto
+            empresa = contratoQuery.empresa
+            inicio = contratoQuery.dataAssinatura 
+            fimDaVigencia = contratoQuery.dataTermino
+            vencimento = contratoQuery.vencimento
+            gestor = contratoQuery.gestor
             
-            for dado in dados:
-                contratoQuery = modelContrato.contrato(listaDedadosContrato=dado)
-                id = str(contratoQuery.id)
-                contrato = contratoQuery.contrato
-                processo = contratoQuery.numeroDeProcesso
-                objeto = contratoQuery.objeto
-                empresa = contratoQuery.empresa
-                inicio = contratoQuery.dataAssinatura 
-                fimDaVigencia = contratoQuery.dataTermino
-                vencimento = contratoQuery.vencimento
-                gestor = contratoQuery.gestor
-                
-                status = contratoQuery.status
-                
+            status = contratoQuery.status
+            
 
-                self.listaDeContratos.InsertStringItem(self.index, id)
-                self.listaDeContratos.SetStringItem(self.index, 1, contrato)
-                self.listaDeContratos.SetStringItem(self.index, 2, processo)
-                self.listaDeContratos.SetStringItem(self.index, 3, objeto)
-                self.listaDeContratos.SetStringItem(self.index, 4, empresa)
-                self.listaDeContratos.SetStringItem(self.index, 5, inicio)
-                self.listaDeContratos.SetStringItem(self.index, 6, fimDaVigencia)
-                self.listaDeContratos.SetStringItem(self.index, 7, vencimento)
-                self.listaDeContratos.SetStringItem(self.index, 8, gestor)
-                self.listaDeContratos.SetStringItem(self.index, 9, status)
-                self.index += 1
-        else:
-            dlgFiltroSemDados = wx.MessageDialog(None , "Não tenho informações suficientes para filtar dados.", "Erro",wx.OK | wx.ICON_INFORMATION)
-            dlgFiltroSemDados.ShowModal()
+            self.listaDeContratos.InsertStringItem(self.index, id)
+            self.listaDeContratos.SetStringItem(self.index, 1, contrato)
+            self.listaDeContratos.SetStringItem(self.index, 2, processo)
+            self.listaDeContratos.SetStringItem(self.index, 3, objeto)
+            self.listaDeContratos.SetStringItem(self.index, 4, empresa)
+            self.listaDeContratos.SetStringItem(self.index, 5, inicio)
+            self.listaDeContratos.SetStringItem(self.index, 6, fimDaVigencia)
+            self.listaDeContratos.SetStringItem(self.index, 7, vencimento)
+            self.listaDeContratos.SetStringItem(self.index, 8, gestor)
+            self.listaDeContratos.SetStringItem(self.index, 9, status)
+            self.index += 1
+
 
     
     def carregaDadosContratos(self):
@@ -168,6 +189,14 @@ class viwerCdp(object):
 
     def abrirviwerNovoContrato(self,event):
         telaContrato = viwerNovoContrato.viwerNovoContrato()
+        contador_de_frames(telaContrato.frame)
+
+    def abrirviwerServidores(self,event):
+        telaContrato = viwerServidores.gerenciarServidores()
+        contador_de_frames(telaContrato.frame)
+
+    def abrirviwerRelatorioServidor(self,event):
+        telaContrato = viwerRelatorioServidor.relatorioServidores()
         contador_de_frames(telaContrato.frame)
 
     def exluirContrato(self,event):

@@ -135,7 +135,7 @@ class viwerGerenciar(object):
         for servidor in queryServidores:
             objServidor = modelServidor.servidor(servidor)
             listaServidores.append(objServidor.nome)
-        return listaServidores
+        return sorted(listaServidores)
 
     def incluirFiscal(self,event):
         gestor = self.comboGestor.GetValue()

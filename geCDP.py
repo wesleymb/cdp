@@ -163,17 +163,16 @@ def queryTabelaServidorComContrato(servidor):
     connection.close()
     return lista
 
-def queryTabelaGestorComContrato():
+def queryTabelaFiscalComContrato(idServidor):
     c,connection = conectar()
-    sql = '''SELECT CONTRATO.numeroDeProcesso, SERVIDOR.NOME  
-    FROM FISCAL
-    INNER JOIN SERVIDOR on FISCAL.idServidor = SERVIDOR.id
-    INNER JOIN CONTRATO on CONTRATO.id = FISCAL.idContrato
-    '''
+    sql = '''SELECT CONTRATO.id,contrato, numeroDeProcesso, objeto, empresa, dataAssinatura, dataTermino, vencimento,  idServidorGestor,status
+    FROM CONTRATO
+    INNER JOIN FISCAL on FISCAL.idContrato = CONTRATO.id
+    WHERE FISCAL.idServidor = {idServidor}
+    '''.format(idServidor=idServidor)
     lista = []
     for linha in c.execute(sql):
-        for dado in linha:
-            lista.append(dado)
+        lista.append(linha)
     connection.close()
     return lista
 
@@ -190,6 +189,10 @@ def inserNovoContrato(contrato,numeroDeProcesso,objeto,empresa,dataAssinatura,da
         status = status
         ))
 
+def inserirNovoServidor(nome,idFuncional):
+        sql("""INSERT INTO SERVIDOR (nome, idFuncional) 
+        VALUES("{nome}","{idFuncional}")""".format(nome=nome,idFuncional=idFuncional))
+
 def inserNovoFiscal(idServidor,idContrato):
     sql("""INSERT INTO FISCAl (idServidor, idContrato) VALUES({idServidor},{idContrato})""".format(idServidor=idServidor,idContrato=idContrato))
         
@@ -197,13 +200,17 @@ def excluirFiscal(idContrato,idServidor):
     sql("""DELETE FROM FISCAL WHERE FISCAL.idContrato = {idContrato} AND FISCAL.idServidor = {idServidor}"""
     .format(idContrato=idContrato,idServidor=idServidor))
 
+def excluirServidor(idServidor):
+    sql("""DELETE FROM SERVIDOR WHERE id = {idServidor}"""
+    .format(idServidor=idServidor))
+
 
 def excluirContrato(idContrato):
     sql("""DELETE FROM CONTRATO WHERE ID = {idContrato}""".format(idContrato=idContrato))
     sql("""DELETE FROM FISCAL WHERE FISCAL.idContrato = {idContrato}""".format(idContrato=idContrato))
     sql("""DELETE FROM PAGAMENTO WHERE PAGAMENTO.idContrato = {idContrato}""".format(idContrato=idContrato))
 
-def altulizarContrato(contrato,numeroDeProcesso,objeto,empresa,dataAssinatura,dataTermino,vencimento,idServidorGestor,status, idContrato):
+def ataulizarContrato(contrato,numeroDeProcesso,objeto,empresa,dataAssinatura,dataTermino,vencimento,idServidorGestor,status, idContrato):
         sql("""UPDATE CONTRATO SET  
         contrato = "{contrato}", numeroDeProcesso = "{numeroDeProcesso}", objeto = "{objeto}", empresa = "{empresa}", dataAssinatura = "{dataAssinatura}", dataTermino = "{dataTermino}", vencimento = "{vencimento}", idServidorGestor = {idServidorGestor},status = "{status}" WHERE id = {idContrato}"""
         .format(contrato = contrato,
@@ -217,12 +224,15 @@ def altulizarContrato(contrato,numeroDeProcesso,objeto,empresa,dataAssinatura,da
         status = status,
         idContrato=idContrato
         ))
-
+def ataulizarServidor(nome,idFuncional,idServidor):
+    sql("""UPDATE SERVIDOR SET nome = "{nome}", idFuncional = "{idFuncional}" WHERE id = {idServidor}""".format(nome=nome,idFuncional=idFuncional,idServidor=idServidor))
 
 if __name__ == "__main__":
     criarBanco()
     # inserMassaDeDadosFiscal()
-    x = queryTabelaComWhereLike(tabela='CONTRATO',coluna='OBJETO',dado='CENT')
+    # x = queryTabelaComWhereLike(tabela='CONTRATO',coluna='OBJETO',dado='CENT')
     # x = queryTabela(tabela="SERVIDOR")
     # x = queryTabelaServidorComContrato(servidor =  2)
-    print(x)
+    x = queryTabelaFiscalComContrato(idServidor=3)
+    for i in x:
+        print(i)

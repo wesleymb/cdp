@@ -1,3 +1,5 @@
+import geCDP
+
 class servidor:
     def __init__(self,listaDedadosServidor):
         self.listaDedadosServidor = listaDedadosServidor
@@ -8,3 +10,10 @@ class servidor:
         self.nome = self.listaDedadosServidor[1]
         self.idFuncional = self.listaDedadosServidor[2]
 
+    def excluirServidorNaTabela(self):
+
+        geCDP.excluirServidor(idServidor=self.id)
+
+    def atulizarNaTabela(self):
+
+        geCDP.ataulizarServidor(nome=self.nome,idFuncional=self.idFuncional,idServidor=self.id)

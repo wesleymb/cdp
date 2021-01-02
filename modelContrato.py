@@ -48,7 +48,7 @@ class contrato:
         return listaDeDias			
 
     def altulizarContrato(self):
-        geCDP.altulizarContrato(
+        geCDP.ataulizarContrato(
             contrato=self.contrato,
             numeroDeProcesso=self.numeroDeProcesso,
             objeto=self.objeto,

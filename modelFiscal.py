@@ -13,5 +13,10 @@ class fiscal:
         for nome in nomeFiscal:
             self.nomeFiscal = nome[1]
 
+        numeroContrato = geCDP.queryTabelaComWhere(tabela="CONTRATO",coluna="id",dado=self.idContrato)
+        for nome in numeroContrato:
+            self.numeroContrato = nome[2]
+
     def excluirDaTabela(self):
         geCDP.excluirFiscal(idContrato=self.idContrato,idServidor=self.idServidor)
+
