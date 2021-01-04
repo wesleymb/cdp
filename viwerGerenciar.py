@@ -17,7 +17,7 @@ class viwerGerenciar(object):
         self.idContrato = idContrato
 
         self.frame = wx.Frame(None, -1, 'Contrato', style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
-        self.frame.SetDimensions(0,0,1100,525)
+        self.frame.SetDimensions(0,0,1100,550)
         self.panel = wx.Panel(self.frame)
         self.index = 0
         self.statusbar =  self.frame.CreateStatusBar(1)
@@ -35,7 +35,7 @@ class viwerGerenciar(object):
         self.menu_bar.Append(self.menu_arquivo,"Arquivo")
         self.frame.SetMenuBar(self.menu_bar)
         
-        wx.StaticBox(self.panel, wx.ID_ANY, 'Dados do Contrato', (15, 5), size=(500, 350))
+        wx.StaticBox(self.panel, wx.ID_ANY, 'Dados do Contrato', (15, 5), size=(500, 460))
 
         wx.StaticBox(self.panel, wx.ID_ANY, 'Gestores e Fiscais', (525, 5), size=(525, 350))
 
@@ -65,6 +65,9 @@ class viwerGerenciar(object):
         wx.StaticText(self.panel, wx.ID_ANY, "Data de termino:", (150, 225))
         self.calendarioTermino = wx.adv.DatePickerCtrl(self.panel, wx.ID_ANY, pos= (150, 250), style=wx.adv.DP_DROPDOWN)
 
+        wx.StaticText(self.panel, wx.ID_ANY, "Observação", (25, 300))
+        self.observacao = wx.TextCtrl(self.panel, wx.ID_ANY,"", (25, 325),size=(350, 125),style=wx.TE_MULTILINE)
+
         self.listaDeServidores = self.geraListaServidores()
         
 
@@ -92,6 +95,9 @@ class viwerGerenciar(object):
         self.buttonFechar = wx.Button(self.panel, wx.ID_ANY, 'Fechar', (925, 400),size=(100,-1))
         self.buttonFechar.Bind(wx.EVT_BUTTON, self.fechar)
         
+
+        
+        
         self.queryDeCarregamentoDeDadosContrato()
         self.queryDeCarregamentoDeDadosFiscais()
 
@@ -107,6 +113,7 @@ class viwerGerenciar(object):
         termino = self.calendarioTermino.GetValue().FormatISODate()
         vencimento = self.calendarioVencimento.GetValue().FormatISODate()
         gestor = self.comboGestor.GetValue()
+        observacao = self.observacao.GetValue()
         status = self.comboStatus.GetValue()
 
         idServidor = ''
@@ -116,7 +123,7 @@ class viwerGerenciar(object):
             idServidor = objServidor.id
         
         
-        tuplaDeDados = (self.idContrato,contrato,processo,objeto,empresa,assinatura,termino,vencimento,idServidor,status)
+        tuplaDeDados = (self.idContrato,contrato,processo,objeto,empresa,assinatura,termino,vencimento,idServidor,status,observacao)
 
         objContrato = modelContrato.contrato(tuplaDeDados)
         objContrato.altulizarContrato()
@@ -188,6 +195,7 @@ class viwerGerenciar(object):
             self.calendarioTermino.SetValue(queryContrato.dataTerminoTipoDate)
             self.calendarioVencimento.SetValue(queryContrato.vencimentoTipoDate)
             self.comboGestor.SetValue(queryContrato.gestor)
+            self.observacao.SetValue(queryContrato.observacao)
     
     def queryDeCarregamentoDeDadosFiscais(self):
         self.listaDeFiscais.DeleteAllItems()

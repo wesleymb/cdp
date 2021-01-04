@@ -41,6 +41,7 @@ def criarTabelaContrato():
         vencimento date, 
         idServidorGestor int, 
         status text,
+        observacao text,
         PRIMARY KEY (id),
         FOREIGN KEY (idServidorGestor) REFERENCES SERVIDOR(id)
         )""")
@@ -125,14 +126,14 @@ def inserMassaDeDadosServidor():
         VALUES("Marco","333333-3")""")
 
 def inserMassaDeDadosContrato():
-    sql("""INSERT INTO CONTRATO (contrato, numeroDeProcesso, objeto, empresa, dataAssinatura, dataTermino, vencimento, idServidorGestor, status) 
-        VALUES("006/17","E-17/0000/0000/0000","Central telefonica","Ra telecom","2020-3-5","2021-3-5","2020-3-10", 1,"ATIVO")""")
+    sql("""INSERT INTO CONTRATO (contrato, numeroDeProcesso, objeto, empresa, dataAssinatura, dataTermino, vencimento, idServidorGestor, status,observacao) 
+        VALUES("006/17","E-17/0000/0000/0000","Central telefonica","Ra telecom","2020-3-5","2021-3-5","2020-3-10", 1,"ATIVO","")""")
     
-    sql("""INSERT INTO CONTRATO (contrato, numeroDeProcesso, objeto, empresa, dataAssinatura, dataTermino, vencimento, idServidorGestor, status) 
-        VALUES("006/17","E-17/0000/0000/0000","Computadores","SIMPRESS","2020-3-5","2021-3-5","2020-3-10", 2,"ATIVO")""")
+    sql("""INSERT INTO CONTRATO (contrato, numeroDeProcesso, objeto, empresa, dataAssinatura, dataTermino, vencimento, idServidorGestor, status,observacao) 
+        VALUES("006/17","E-17/0000/0000/0000","Computadores","SIMPRESS","2020-3-5","2021-3-5","2020-3-10", 2,"ATIVO","")""")
 
-    sql("""INSERT INTO CONTRATO (contrato, numeroDeProcesso, objeto, empresa, dataAssinatura, dataTermino, vencimento, idServidorGestor, status) 
-        VALUES("006/17","E-17/0000/0000/0000","Impressoras","CHADA","2020-3-5","2021-3-5","2020-3-10", 3,"ATIVO")""")
+    sql("""INSERT INTO CONTRATO (contrato, numeroDeProcesso, objeto, empresa, dataAssinatura, dataTermino, vencimento, idServidorGestor, status, observacao) 
+        VALUES("006/17","E-17/0000/0000/0000","Impressoras","CHADA","2020-3-5","2021-3-5","2020-3-10", 3,"ATIVO","")""")
 
 def inserMassaDeDadosFiscal():
     sql("""INSERT INTO FISCAl (idServidor, idContrato) 
@@ -165,7 +166,7 @@ def queryTabelaServidorComContrato(servidor):
 
 def queryTabelaFiscalComContrato(idServidor):
     c,connection = conectar()
-    sql = '''SELECT CONTRATO.id,contrato, numeroDeProcesso, objeto, empresa, dataAssinatura, dataTermino, vencimento,  idServidorGestor,status
+    sql = '''SELECT CONTRATO.id,contrato, numeroDeProcesso, objeto, empresa, dataAssinatura, dataTermino, vencimento,  idServidorGestor,status,observacao
     FROM CONTRATO
     INNER JOIN FISCAL on FISCAL.idContrato = CONTRATO.id
     WHERE FISCAL.idServidor = {idServidor}
@@ -210,9 +211,9 @@ def excluirContrato(idContrato):
     sql("""DELETE FROM FISCAL WHERE FISCAL.idContrato = {idContrato}""".format(idContrato=idContrato))
     sql("""DELETE FROM PAGAMENTO WHERE PAGAMENTO.idContrato = {idContrato}""".format(idContrato=idContrato))
 
-def ataulizarContrato(contrato,numeroDeProcesso,objeto,empresa,dataAssinatura,dataTermino,vencimento,idServidorGestor,status, idContrato):
+def ataulizarContrato(contrato,numeroDeProcesso,objeto,empresa,dataAssinatura,dataTermino,vencimento,idServidorGestor,status, observacao, idContrato):
         sql("""UPDATE CONTRATO SET  
-        contrato = "{contrato}", numeroDeProcesso = "{numeroDeProcesso}", objeto = "{objeto}", empresa = "{empresa}", dataAssinatura = "{dataAssinatura}", dataTermino = "{dataTermino}", vencimento = "{vencimento}", idServidorGestor = {idServidorGestor},status = "{status}" WHERE id = {idContrato}"""
+        contrato = "{contrato}", numeroDeProcesso = "{numeroDeProcesso}", objeto = "{objeto}", empresa = "{empresa}", dataAssinatura = "{dataAssinatura}", dataTermino = "{dataTermino}", vencimento = "{vencimento}", idServidorGestor = {idServidorGestor},status = "{status}", observacao = "{observacao}" WHERE id = {idContrato}"""
         .format(contrato = contrato,
         numeroDeProcesso = numeroDeProcesso,
         objeto = objeto,
@@ -222,6 +223,7 @@ def ataulizarContrato(contrato,numeroDeProcesso,objeto,empresa,dataAssinatura,da
         vencimento = vencimento,
         idServidorGestor=idServidorGestor,
         status = status,
+        observacao = observacao,
         idContrato=idContrato
         ))
 def ataulizarServidor(nome,idFuncional,idServidor):
@@ -229,10 +231,12 @@ def ataulizarServidor(nome,idFuncional,idServidor):
 
 if __name__ == "__main__":
     criarBanco()
-    # inserMassaDeDadosFiscal()
-    # x = queryTabelaComWhereLike(tabela='CONTRATO',coluna='OBJETO',dado='CENT')
-    # x = queryTabela(tabela="SERVIDOR")
-    # x = queryTabelaServidorComContrato(servidor =  2)
+    # sql("""UPDATE CONTRATO SET observacao = ''""")
+    
+    # # inserMassaDeDadosFiscal()
+    # # x = queryTabelaComWhereLike(tabela='CONTRATO',coluna='OBJETO',dado='CENT')
+    # x = queryTabela(tabela="CONTRATO")
+    # # x = queryTabelaServidorComContrato(servidor =  2)
     x = queryTabelaFiscalComContrato(idServidor=3)
     for i in x:
         print(i)

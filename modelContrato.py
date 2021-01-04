@@ -19,11 +19,16 @@ class contrato:
         self.vencimento = self.listaDedadosContrato[7]
         self.idServidorGestor = self.listaDedadosContrato[8]
         self.status = self.listaDedadosContrato[9]
+        self.observacao = self.listaDedadosContrato[10]
 
         self.dataAssinaturaTipoDate = datetime.datetime.strptime(self.dataAssinatura,"%Y-%m-%d").date()
         self.dataTerminoTipoDate = datetime.datetime.strptime(self.dataTermino,"%Y-%m-%d").date()
         self.vencimentoTipoDate = datetime.datetime.strptime(self.vencimento,"%Y-%m-%d").date()
 
+        
+        if self.observacao == None:
+            self.observacao = ''
+        
         if self.idServidorGestor != None:
             nomegestor = geCDP.queryTabelaComWhere(tabela="SERVIDOR",coluna="id",dado=self.idServidorGestor)
             for nome in nomegestor:
@@ -58,6 +63,7 @@ class contrato:
             vencimento=self.vencimento,
             idServidorGestor=self.idServidorGestor,
             status=self.status,
+            observacao = self.observacao,
             idContrato=self.id)
 
 if __name__ == "__main__":
