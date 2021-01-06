@@ -61,6 +61,7 @@ def criarTabelaPagamento():
         dataDePagamento date,  
         valor NUMERIC,
         status text,
+        numeroDeProcesso text, 
         PRIMARY KEY (id),
         FOREIGN KEY (idContrato) REFERENCES CONTRATO(id)
         )""")
@@ -146,8 +147,8 @@ def inserMassaDeDadosFiscal():
         VALUES(1,2)""")
 
 def inserMassaDeDadosPagamento():
-    sql("""INSERT INTO PAGAMENTO (idContrato, dataDePagamento, valor, status) 
-        VALUES(1,"2020-12-13",500.10, "PAGO")""")
+    sql("""INSERT INTO PAGAMENTO (idContrato, dataDePagamento, valor, status, numeroDeProcesso) 
+        VALUES(1,"2020-12-13",500.10, "PAGO", "SEI-170026/002148/2020")""")
 
 
 def queryTabelaServidorComContrato(servidor):
@@ -235,8 +236,8 @@ if __name__ == "__main__":
     
     # # inserMassaDeDadosFiscal()
     # # x = queryTabelaComWhereLike(tabela='CONTRATO',coluna='OBJETO',dado='CENT')
-    # x = queryTabela(tabela="CONTRATO")
+    x = queryTabela(tabela="PAGAMENTO")
     # # x = queryTabelaServidorComContrato(servidor =  2)
-    x = queryTabelaFiscalComContrato(idServidor=3)
+    # x = queryTabelaFiscalComContrato(idServidor=3)
     for i in x:
         print(i)
