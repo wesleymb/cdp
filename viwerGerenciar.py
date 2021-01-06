@@ -8,7 +8,7 @@ import modelNovoFiscal
 
 
 def main():
-    viwerGerenciar(idContrato=2)
+    viwerGerenciar(idContrato=1)
 
 class viwerGerenciar(object):
     """docstring for viwerGerenciar"""
@@ -45,11 +45,12 @@ class viwerGerenciar(object):
         wx.StaticText(self.panel, wx.ID_ANY, "Processo", (25, 75))
         self.processo = wx.TextCtrl(self.panel, wx.ID_ANY,"", (100, 75),size=(125, -1))
 
-        self.comboOpcoes = ['ATIVO','ENCERRADO']
 
         wx.StaticText(self.panel, wx.ID_ANY, "Data de Vencimento:", (350, 75))
         self.calendarioVencimento = wx.adv.DatePickerCtrl(self.panel, wx.ID_ANY, pos= (400, 100), style=wx.adv.DP_DROPDOWN)
         
+        self.comboOpcoes = ['ATIVO','ENCERRADO']
+
         wx.StaticText(self.panel, wx.ID_ANY, "Status", (350, 25))
         self.comboStatus = wx.ComboBox(self.panel, wx.ID_ANY, pos = (400,25), choices = self.comboOpcoes, style=wx.CB_READONLY)
         

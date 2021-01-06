@@ -191,6 +191,11 @@ def inserNovoContrato(contrato,numeroDeProcesso,objeto,empresa,dataAssinatura,da
         status = status
         ))
 
+def inserirNovoPagamento(idContrato,dataDePagamento):
+    sql("""INSERT INTO PAGAMENTO (idContrato, dataDePagamento) 
+        VALUES({idContrato},"{dataDePagamento}")""".format(idContrato=idContrato,dataDePagamento=dataDePagamento))
+
+
 def inserirNovoServidor(nome,idFuncional):
         sql("""INSERT INTO SERVIDOR (nome, idFuncional) 
         VALUES("{nome}","{idFuncional}")""".format(nome=nome,idFuncional=idFuncional))

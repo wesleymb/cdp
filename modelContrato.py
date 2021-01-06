@@ -40,6 +40,7 @@ class contrato:
             self.gestor = ''
 
 
+
     def gerarVencimentos(self):
 
         vencimento = datetime.datetime.strptime(self.vencimento,"%Y-%m-%d").date()
@@ -50,7 +51,7 @@ class contrato:
             dataMesQueVem = vencimento + relativedelta(months=meses)
             listaDeDias.append(dataMesQueVem)
             meses = meses + 1
-        return listaDeDias			
+        return listaDeDias	
 
     def altulizarContrato(self):
         geCDP.ataulizarContrato(
