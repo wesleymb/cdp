@@ -37,9 +37,13 @@ class viwerGDC(object):
         self.menuRelatorio = wx.Menu()
         self.abaRelatorioServidor = self.menuRelatorio.Append(wx.ID_ANY, "Relatório servidor", "Relatório servidor")
 
+        self.menuAjuda = wx.Menu()
+        self.abaAjuda = self.menuAjuda.Append(wx.ID_ANY, "Ajuda", "Ajuda")
+
         self.menu_bar = wx.MenuBar()
         self.menu_bar.Append(self.menu_arquivo,"Arquivo")
         self.menu_bar.Append(self.menuRelatorio,"Relatórios")
+        self.menu_bar.Append(self.menuAjuda,"Ajuda")
         self.frame.SetMenuBar(self.menu_bar)
 
 
@@ -88,6 +92,7 @@ class viwerGDC(object):
         self.frame.Bind(wx.EVT_MENU, self.abrirviwerServidores, self.abaGerenciarServidores)
         self.frame.Bind(wx.EVT_MENU, self.abrirviwerNovoContrato, self.abaNovoContrato)
         self.frame.Bind(wx.EVT_MENU, self.abrirviwerRelatorioServidor, self.abaRelatorioServidor)
+        self.frame.Bind(wx.EVT_MENU, self.abrirAjuda, self.abaAjuda)
             
 
 
@@ -178,6 +183,12 @@ class viwerGDC(object):
             self.index += 1
 
 
+    def abrirAjuda(self,event):
+        dlgServidorAtulizarErro = wx.MessageDialog(None , "Feito por: Wesley Moreira de Menezes Barbosa\nID: 5109644-7\nVersão: 1.0V","Informações", wx.OK| wx.ICON_INFORMATION)
+        dlgServidorAtulizarErro.ShowModal()  
+
+    
+    
     def abrirviwerGerenciar(self,event):
         item = self.listaDeContratos.GetFocusedItem()
         if item != -1:
