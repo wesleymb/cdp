@@ -123,6 +123,8 @@ class viwerGerenciar(object):
         result = dlgGerarRelatorio.ShowModal()
         if result == wx.ID_YES:
             geRelatorioContrato.gerarRelatorio(idContrato=self.idContrato)
+            dlgRelatorio = wx.MessageDialog(None , "Relatório gerado com sucesso","Pronto.", wx.OK| wx.ICON_INFORMATION)
+            dlgRelatorio.ShowModal()  
              
     
     def abrirviwerGerenciarVencimentos(self,event):
