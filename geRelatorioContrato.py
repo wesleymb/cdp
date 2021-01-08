@@ -3,6 +3,7 @@ import os
 import geCDP
 import modelContrato
 import modelPagamento
+import modelFiscal
 
 
 def gerarRelatorio(idContrato):
@@ -73,7 +74,7 @@ def gerarRelatorio(idContrato):
             <th>Status</th>
             </tr>""".format(contrato=Contrato.contrato,numeroDeProcesso=Contrato.numeroDeProcesso,empresa=Contrato.empresa)
         
-        with open('{contrato}.html'.format(contrato=Contrato.empresa), 'a+') as arqRelat:
+        with open('{contrato}_{date}.html'.format(contrato=Contrato.empresa,date=datetime.date.today()), 'w+') as arqRelat:
             arqRelat.write(html1)
             arqRelat.write(html2)
             
@@ -88,6 +89,27 @@ def gerarRelatorio(idContrato):
             arqRelat.write("<td>{status}</td>".format(status= Contrato.status))    
             arqRelat.write('</tr>')
 
+            
+            arqRelat.write("""
+            </table>
+            </br>
+            <h4>
+                <td>Fiscais</td>
+            </h4>
+            <table>
+            <tr>
+                <th>Nome</th>
+                <th>Id funcional</th>
+            </tr>""")
+
+            for queryFiscal in geCDP.queryTabelaComWhere(tabela="FISCAL",coluna="idContrato",dado=idContrato):
+                Fiscal = modelFiscal.fiscal(queryFiscal)
+                arqRelat.write('<tr>')
+                arqRelat.write("<td>{nome}</td>".format(nome=Fiscal.nomeFiscal))
+                arqRelat.write("<td>{nome}</td>".format(nome=Fiscal.idFuncional))
+                arqRelat.write('<tr>')
+
+            
             arqRelat.write("""
             </table>
             </br>

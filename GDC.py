@@ -75,7 +75,7 @@ class viwerGDC(object):
 
         self.button_novo = wx.Button(self.panel, wx.ID_ANY, 'Novo', (1090, 60),size=(100,-1))
         self.buttonGerenciar = wx.Button(self.panel, wx.ID_ANY, 'Gerenciar', (1090, 85),size=(100,-1))
-        self.button_atulizar = wx.Button(self.panel, wx.ID_ANY, 'Atulizar', (1090, 115),size=(100,-1))
+        self.button_atulizar = wx.Button(self.panel, wx.ID_ANY, 'Atualizar', (1090, 115),size=(100,-1))
         
         self.button_excluir = wx.Button(self.panel, wx.ID_ANY, 'Excluir', (1090, 160),size=(100,-1))
 
