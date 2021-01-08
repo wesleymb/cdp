@@ -5,6 +5,14 @@ import modelServidor
 import modelContrato
 import modelFiscal
 import modelNovoFiscal
+import viwerGerenciarVencimentos
+import geRelatorioContrato
+
+
+LISTA_DE_FRAMES= []
+def contador_de_frames(frame):
+    LISTA_DE_FRAMES.append(frame)
+
 
 
 def main():
@@ -21,7 +29,11 @@ class viwerGerenciar(object):
         self.panel = wx.Panel(self.frame)
         self.index = 0
         self.statusbar =  self.frame.CreateStatusBar(1)
+        
+        
+        self.frame.Bind(wx.EVT_CLOSE, self.fechar_todos_os_frames)
         self.statusbar.SetStatusText("ID contrato: {id}".format(id=self.idContrato))
+        contador_de_frames(frame=self.frame)
 
         self.icon = wx.Icon(wx.Image('icon.png',wx.BITMAP_TYPE_PNG).ConvertToBitmap())
         self.frame.SetIcon(self.icon)
@@ -96,8 +108,8 @@ class viwerGerenciar(object):
         self.buttonFechar = wx.Button(self.panel, wx.ID_ANY, 'Fechar', (925, 400),size=(100,-1))
         self.buttonFechar.Bind(wx.EVT_BUTTON, self.fechar)
         
-
-        
+        self.frame.Bind(wx.EVT_MENU, self.abrirviwerGerenciarVencimentos , self.abaGerenciarVencimentos)
+        self.frame.Bind(wx.EVT_MENU, self.gerarRelatorioDeContrato , self.abaGerarRelatorico)
         
         self.queryDeCarregamentoDeDadosContrato()
         self.queryDeCarregamentoDeDadosFiscais()
@@ -105,6 +117,21 @@ class viwerGerenciar(object):
         self.frame.Show()
         self.frame.Centre()
 
+    
+    def gerarRelatorioDeContrato(self,event):
+        dlgGerarRelatorio = wx.MessageDialog(None , "Deseja gerar relatório do contrato?", "Gerar relatório",wx.YES_NO | wx.ICON_INFORMATION)
+        result = dlgGerarRelatorio.ShowModal()
+        if result == wx.ID_YES:
+            geRelatorioContrato.gerarRelatorio(idContrato=self.idContrato)
+             
+    
+    def abrirviwerGerenciarVencimentos(self,event):
+        telaGerenciarVencimentos = viwerGerenciarVencimentos.gerenciarVencimentos(idContrato=self.idContrato)
+        print(telaGerenciarVencimentos.frame)
+        contador_de_frames(telaGerenciarVencimentos.frame)
+        
+    
+    
     def salvar(self,event):
         contrato = self.contrato.GetValue()
         processo = self.processo.GetValue()
@@ -206,6 +233,13 @@ class viwerGerenciar(object):
             self.listaDeFiscais.InsertStringItem(self.index, str(queryFiscal.idServidor))
             self.listaDeFiscais.SetStringItem(self.index, 1, queryFiscal.nomeFiscal)
             self.index += 1
+
+    def fechar_todos_os_frames(self, event):
+        for frame in LISTA_DE_FRAMES:
+            try:
+                frame.Destroy()
+            except:
+                continue
 
 
 if __name__ == '__main__':

@@ -41,13 +41,13 @@ class contrato:
 
 
 
-    def gerarVencimentos(self):
+    def gerarVencimentos(self,total):
 
         vencimento = datetime.datetime.strptime(self.vencimento,"%Y-%m-%d").date()
         
         meses = 0		
         listaDeDias = []
-        while meses <= 12:
+        while meses < total:
             dataMesQueVem = vencimento + relativedelta(months=meses)
             listaDeDias.append(dataMesQueVem)
             meses = meses + 1

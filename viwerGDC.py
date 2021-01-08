@@ -12,12 +12,12 @@ def contador_de_frames(frame):
 
 
 def main():
-    viwerCdp()
+    viwerGDC()
 
-class viwerCdp(object):
-    """docstring for viwerCdp"""
+class viwerGDC(object):
+    """docstring for viwerGDC"""
     def __init__(self):
-        super(viwerCdp, self).__init__()
+        super(viwerGDC, self).__init__()
 
         self.frame = wx.Frame(None, -1, 'CPD', style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
         self.frame.SetDimensions(0,0,1224,600)
@@ -203,8 +203,8 @@ class viwerCdp(object):
         item = self.listaDeContratos.GetFocusedItem()
         
         if item != -1:
-            dlg_juntar_pdf_em_massa = wx.MessageDialog(None , "Tem certeza que quer excluir esse processo?", "Juntar",wx.YES_NO | wx.ICON_WARNING)
-            result = dlg_juntar_pdf_em_massa.ShowModal()
+            dlgApagarContrato = wx.MessageDialog(None , "Tem certeza que quer excluir esse contrato?", "Alerta",wx.YES_NO | wx.ICON_WARNING)
+            result = dlgApagarContrato.ShowModal()
             if result == wx.ID_YES: 
                 idContrato = self.listaDeContratos.GetItem(itemIdx=item,col=0).GetText()
                 geCDP.excluirContrato(idContrato=idContrato)

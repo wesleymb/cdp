@@ -7,8 +7,10 @@ class pagamento:
         self.listaDedados = listaDedados
         if tipo == 1:
             self.ajustarDados()
-        else:
-            self.ajustarDadosNovo()
+        elif tipo == 2:
+             self.ajustarDadosNovo()
+        elif tipo == 3:
+            self.ajustarDadosNovoAutomatico()
 
     def ajustarDados(self):
         # idContrato, dataDePagamento, valor, status, numeroDeProcesso
@@ -18,6 +20,8 @@ class pagamento:
         self.valor = self.listaDedados[3]
         self.status = self.listaDedados[4]
         self.numeroDeProcesso = self.listaDedados[5]
+
+        self.dataDePagamentoTipoDate = datetime.datetime.strptime(self.dataDePagamento,"%Y-%m-%d").date()
     
         if self.valor == None:
             self.valor = ""
@@ -32,6 +36,27 @@ class pagamento:
         
         self.idContrato = self.listaDedados[0]
         self.dataDePagamento = self.listaDedados[1]
+        self.valor = self.listaDedados[2]
+        self.status = self.listaDedados[3]
+        self.numeroDeProcesso = self.listaDedados[4]
 
-    def inserirNovoPagamento(self):
-        geCDP.inserirNovoPagamento(idContrato=self.idContrato,dataDePagamento=self.dataDePagamento)
+        
+            
+    def ajustarDadosNovoAutomatico(self):
+        
+        self.idContrato = self.listaDedados[0]
+        self.dataDePagamento = self.listaDedados[1]
+
+    def inserirNovoPagamentoAutomatico(self):
+        geCDP.inserirNovoPagamentoAutomatico(idContrato=self.idContrato, dataDePagamento=self.dataDePagamento)
+
+    def inserirNovoPagamentoManual(self):
+        geCDP.inserirNovoPagamentoManual(idContrato=self.idContrato, dataDePagamento=self.dataDePagamento, valor=self.valor, status=self.status, numeroDeProcesso=self.numeroDeProcesso)
+    
+
+    def excluirPagamento(self):
+        geCDP.excluirPagamento(idPagamento=self.id)
+
+    def atulizarPagamento(self):
+
+        geCDP.ataulizarPagamento(dataDePagamento=self.dataDePagamento, valor=self.valor, status=self.status, numeroDeProcesso=self.numeroDeProcesso, idPagamento=self.id)

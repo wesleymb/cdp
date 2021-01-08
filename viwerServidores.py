@@ -14,7 +14,7 @@ class gerenciarServidores(object):
         super(gerenciarServidores, self).__init__()
         
         self.frame = wx.Frame(None, -1, 'Gerenciar servidores', style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
-        self.frame.SetDimensions(0,0,650,450)
+        self.frame.SetDimensions(0,0,550,450)
         self.panel = wx.Panel(self.frame)
         self.index = 0
         self.statusbar =  self.frame.CreateStatusBar(1)
@@ -28,7 +28,7 @@ class gerenciarServidores(object):
         wx.StaticText(self.panel, wx.ID_ANY, "ID funcional:", (25, 75))
         self.txtIdFuncional = wx.TextCtrl(self.panel, wx.ID_ANY,"", (25, 100),size=(100, -1))
 
-        self.buttonNovo = wx.Button(self.panel, wx.ID_ANY, 'Novo', (400, 50),size=(100,-1))
+        self.buttonIncluir = wx.Button(self.panel, wx.ID_ANY, 'Incluir', (400, 50),size=(100,-1))
 
 
         wx.StaticText(self.panel, wx.ID_ANY, "Filtra", (25, 150))
@@ -39,19 +39,19 @@ class gerenciarServidores(object):
         self.buttonFiltar = wx.Button(self.panel, wx.ID_ANY, 'Filtar', (400, 175),size=(100,-1))
         
         
-        # self.buttonSalvar = wx.Button(self.panel, wx.ID_ANY, 'Salvar', (525, 50),size=(100,-1))
-        self.buttonSalvar = wx.Button(self.panel, wx.ID_ANY, 'Salvar', (525, 210),size=(100,-1))
-        self.buttonExcluir = wx.Button(self.panel, wx.ID_ANY, 'Excluir', (525, 235),size=(100,-1))
+        # self.buttonAlterar = wx.Button(self.panel, wx.ID_ANY, 'Salvar', (525, 50),size=(100,-1))
+        self.buttonAlterar = wx.Button(self.panel, wx.ID_ANY, 'Alterar', (400, 75),size=(100,-1))
+        self.buttonExcluir = wx.Button(self.panel, wx.ID_ANY, 'Excluir', (400, 100),size=(100,-1))
         
         self.listaDeServidores =  wx.ListCtrl(self.panel,style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_HRULES|wx.LC_AUTOARRANGE,size=(475,150), pos=(25,210))
         self.listaDeServidores.InsertColumn(0,"ID",width=50)
         self.listaDeServidores.InsertColumn(1,"Nome",width=300)
         self.listaDeServidores.InsertColumn(2,"ID funcional",width=125)
 
-        self.buttonNovo.Bind(wx.EVT_BUTTON, self.criarNovoServidor)
+        self.buttonIncluir.Bind(wx.EVT_BUTTON, self.criarNovoServidor)
         self.buttonExcluir.Bind(wx.EVT_BUTTON, self.excluirServidor)
         self.buttonFiltar.Bind(wx.EVT_BUTTON, self.filtarServidor)
-        self.buttonSalvar.Bind(wx.EVT_BUTTON, self.atulizarServidor)
+        self.buttonAlterar.Bind(wx.EVT_BUTTON, self.atulizarServidor)
 
         self.listaDeServidores.Bind(wx.EVT_LIST_ITEM_ACTIVATED,self.carregarParaAtulizarServidor)
 

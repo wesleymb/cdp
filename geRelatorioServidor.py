@@ -1,5 +1,6 @@
 import datetime
 import os
+
 class relatorio:
     def __init__(self,nome,idFuncional,listaServidoresFiscal,listaServidoresGestor):
         self.nome = nome

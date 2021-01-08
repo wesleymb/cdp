@@ -14,7 +14,7 @@ def criarBanco():
         inserMassaDeDadosContrato()
         inserMassaDeDadosServidor()
         inserMassaDeDadosFiscal()
-        inserMassaDeDadosPagamento()
+        # inserMassaDeDadosPagamento()
 
         print("Banco Criado com sucesso.")
 
@@ -191,14 +191,26 @@ def inserNovoContrato(contrato,numeroDeProcesso,objeto,empresa,dataAssinatura,da
         status = status
         ))
 
-def inserirNovoPagamento(idContrato,dataDePagamento):
+def inserirNovoPagamentoAutomatico(idContrato,dataDePagamento):
     sql("""INSERT INTO PAGAMENTO (idContrato, dataDePagamento) 
         VALUES({idContrato},"{dataDePagamento}")""".format(idContrato=idContrato,dataDePagamento=dataDePagamento))
 
+def inserirNovoPagamentoManual(idContrato,dataDePagamento,valor,status,numeroDeProcesso):
+    sql("""INSERT INTO PAGAMENTO (idContrato, dataDePagamento,valor,status,numeroDeProcesso) 
+        VALUES({idContrato},"{dataDePagamento}",{valor},"{status}","{numeroDeProcesso}")""".format(idContrato=idContrato,dataDePagamento=dataDePagamento,valor=valor,status=status,numeroDeProcesso=numeroDeProcesso))
+
+
+        # idContrato INT, 
+        # dataDePagamento date,  
+        # valor NUMERIC,
+        # status text,
+        # numeroDeProcesso text, 
+
+
 
 def inserirNovoServidor(nome,idFuncional):
-        sql("""INSERT INTO SERVIDOR (nome, idFuncional) 
-        VALUES("{nome}","{idFuncional}")""".format(nome=nome,idFuncional=idFuncional))
+    sql("""INSERT INTO SERVIDOR (nome, idFuncional) 
+    VALUES("{nome}","{idFuncional}")""".format(nome=nome,idFuncional=idFuncional))
 
 def inserNovoFiscal(idServidor,idContrato):
     sql("""INSERT INTO FISCAl (idServidor, idContrato) VALUES({idServidor},{idContrato})""".format(idServidor=idServidor,idContrato=idContrato))
@@ -211,6 +223,9 @@ def excluirServidor(idServidor):
     sql("""DELETE FROM SERVIDOR WHERE id = {idServidor}"""
     .format(idServidor=idServidor))
 
+def excluirPagamento(idPagamento):
+    sql("""DELETE FROM PAGAMENTO WHERE id = {idPagamento}"""
+    .format(idPagamento=idPagamento))
 
 def excluirContrato(idContrato):
     sql("""DELETE FROM CONTRATO WHERE ID = {idContrato}""".format(idContrato=idContrato))
@@ -235,14 +250,27 @@ def ataulizarContrato(contrato,numeroDeProcesso,objeto,empresa,dataAssinatura,da
 def ataulizarServidor(nome,idFuncional,idServidor):
     sql("""UPDATE SERVIDOR SET nome = "{nome}", idFuncional = "{idFuncional}" WHERE id = {idServidor}""".format(nome=nome,idFuncional=idFuncional,idServidor=idServidor))
 
+def ataulizarPagamento(dataDePagamento,valor,status,numeroDeProcesso,idPagamento):
+    sql("""UPDATE PAGAMENTO SET 
+    dataDePagamento = "{dataDePagamento}", valor = {valor}, numeroDeProcesso = "{numeroDeProcesso}", status = "{status}" WHERE id = {idPagamento}""".format(dataDePagamento=dataDePagamento,valor=valor,numeroDeProcesso=numeroDeProcesso,status=status,idPagamento=idPagamento))
+
+
+        
+        # dataDePagamento date,  
+        # valor NUMERIC,
+        # status text,
+        # numeroDeProcesso text, 
+
+
+
 if __name__ == "__main__":
     criarBanco()
     # sql("""UPDATE CONTRATO SET observacao = ''""")
-    
-    # # inserMassaDeDadosFiscal()
-    # # x = queryTabelaComWhereLike(tabela='CONTRATO',coluna='OBJETO',dado='CENT')
-    x = queryTabela(tabela="PAGAMENTO")
-    # # x = queryTabelaServidorComContrato(servidor =  2)
-    # x = queryTabelaFiscalComContrato(idServidor=3)
-    for i in x:
-        print(i)
+    # excluirPagamento(idPagamento=1)
+    # # # inserMassaDeDadosFiscal()
+    # # # x = queryTabelaComWhereLike(tabela='CONTRATO',coluna='OBJETO',dado='CENT')
+    # x = queryTabela(tabela="PAGAMENTO")
+    # # # # x = queryTabelaServidorComContrato(servidor =  2)
+    # # # x = queryTabelaFiscalComContrato(idServidor=3)
+    # for i in x:
+    #     print(i)

@@ -3,15 +3,16 @@ import wx.adv
 import geCDP
 import modelPagamento
 import modelContrato
+import datetime
 
 
 def main():
-    viwerGerenciarVencimentos(idContrato=3)
+    gerenciarVencimentos(idContrato=1)
 
-class viwerGerenciarVencimentos(object):
+class gerenciarVencimentos(object):
     """docstring for viwerGerenciar"""
     def __init__(self,idContrato):
-        super(viwerGerenciarVencimentos, self).__init__()
+        super(gerenciarVencimentos, self).__init__()
         self.idContrato = idContrato
 
         self.frame = wx.Frame(None, -1, 'Gerenciar de Vencimentos', style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
@@ -19,6 +20,8 @@ class viwerGerenciarVencimentos(object):
         self.panel = wx.Panel(self.frame)
         self.index = 0
         self.statusbar =  self.frame.CreateStatusBar(1)
+
+        self.statusbar.SetStatusText("ID contrato: {id}".format(id=self.idContrato))
 
         wx.StaticText(self.panel, wx.ID_ANY, "Valor", (25, 25))
         # self.valor = wx.TextCtrl(self.panel, wx.ID_ANY,"", (25, 50),size=(200, -1))
@@ -43,21 +46,108 @@ class viwerGerenciarVencimentos(object):
         self.listaDeVencimentos.InsertColumn(3,"Número de processo",width=150)
         self.listaDeVencimentos.InsertColumn(4,"Status",width=100)
 
-        self.buttonSalvar = wx.Button(self.panel, wx.ID_ANY, 'Salvar', (425, 100),size=(100,50))
-        self.buttonSalvar.Bind(wx.EVT_BUTTON, self.salvar)
+        self.buttonIncluir = wx.Button(self.panel, wx.ID_ANY, 'Incluir', (425, 50),size=(100,-1))
+        self.buttonExcluir = wx.Button(self.panel, wx.ID_ANY, 'Excluir', (425, 75),size=(100,-1))
+        self.buttonAlterar = wx.Button(self.panel, wx.ID_ANY, 'Alterar', (425, 100),size=(100,-1))
+        
+        self.listaDeVencimentos.Bind(wx.EVT_LIST_ITEM_ACTIVATED,self.carregarCampos)
+        
+        self.buttonAlterar.Bind(wx.EVT_BUTTON, self.alterar)
+        self.buttonIncluir.Bind(wx.EVT_BUTTON, self.incluir)
+        self.buttonExcluir.Bind(wx.EVT_BUTTON, self.excluir)
 
+        
         self.carregarDoBanco()
 
         self.frame.Show()
         self.frame.Centre()
 
     
-    def salvar(self,event):
-        valor = self.valor.GetValue()
-        print(valor)
-    
+    def carregarCampos(self,event):
+        item = self.listaDeVencimentos.GetFocusedItem()
+        if item != -1:
+        
+
+            self.idPagamentoParaUpdate = self.listaDeVencimentos.GetItem(itemIdx=item, col=0).GetText()
+            for queryVencimento in geCDP.queryTabelaComWhere(tabela="PAGAMENTO",coluna="ID",dado=self.idPagamentoParaUpdate):
+                Pagamento = modelPagamento.pagamento(queryVencimento)
+                self.valor.SetValue(Pagamento.valor)
+                self.calendarioVencimento.SetValue(Pagamento.dataDePagamentoTipoDate)
+                self.numeroDeprocesso.SetValue(Pagamento.numeroDeProcesso)
+                self.comboStatus.SetValue(Pagamento.status)
+                
+                self.statusbar.SetStatusText("ID pagamento: {id}".format(id=self.idPagamentoParaUpdate))
+                
 
     
+    
+    def alterar(self,event):
+        item = self.listaDeVencimentos.GetFocusedItem()
+        if item != -1:
+            
+            dataDePagamento = self.calendarioVencimento.GetValue().FormatISODate()
+            valor = self.valor.GetValue()
+            status = self.comboStatus.GetValue()
+            numeroDeProcesso = self.numeroDeprocesso.GetValue()
+
+            
+
+            Pagamento = modelPagamento.pagamento((self.idPagamentoParaUpdate,self.idContrato,dataDePagamento,valor,status,numeroDeProcesso))
+            Pagamento.atulizarPagamento()
+
+            dataDePagamento = self.calendarioVencimento.SetValue(datetime.date.today())
+            valor = self.valor.SetValue(0)
+            status = self.comboStatus.SetValue('')
+            numeroDeProcesso = self.numeroDeprocesso.SetValue('')
+
+            self.idPagamentoParaUpdate = ''
+
+            self.statusbar.SetStatusText("ID contrato: {id}".format(id=self.idContrato))
+
+            self.carregarDoBanco()
+            
+            dlgAtulizacao = wx.MessageDialog(None , "Pagamento atulizado com sucesso","Pronto", wx.OK| wx.ICON_INFORMATION)
+            dlgAtulizacao.ShowModal()  
+
+                    
+    
+    def incluir(self,event):
+        dataDePagamento = self.calendarioVencimento.GetValue().FormatISODate()
+        valor = self.valor.GetValue()
+        status = self.comboStatus.GetValue()
+        numeroDeProcesso = self.numeroDeprocesso.GetValue()
+
+        Pagamento = modelPagamento.pagamento((self.idContrato,dataDePagamento,valor,status,numeroDeProcesso),tipo=2)
+        Pagamento.inserirNovoPagamentoManual()
+        
+        dataDePagamento = self.calendarioVencimento.SetValue(datetime.date.today())
+        valor = self.valor.SetValue(0)
+        status = self.comboStatus.SetValue('')
+        numeroDeProcesso = self.numeroDeprocesso.SetValue('')
+        
+        dlgAtulizacao = wx.MessageDialog(None , "Pagamento incluido com sucesso","Pronto", wx.OK| wx.ICON_INFORMATION)
+        dlgAtulizacao.ShowModal()  
+        
+        self.statusbar.SetStatusText("ID contrato: {id}".format(id=self.idContrato))
+        self.carregarDoBanco()
+
+    def excluir(self,event):
+
+        dlgApagarPagamento = wx.MessageDialog(None , "Tem certeza que quer excluir esse pagamento?", "Alerta",wx.YES_NO | wx.ICON_WARNING)
+        result = dlgApagarPagamento.ShowModal()
+        if result == wx.ID_YES: 
+
+            item = self.listaDeVencimentos.GetFocusedItem()
+            if item != -1:
+            
+                idPagamento = self.listaDeVencimentos.GetItem(itemIdx=item, col=0).GetText()
+
+                for queryVencimento in geCDP.queryTabelaComWhere(tabela="PAGAMENTO",coluna="ID",dado=idPagamento):
+                    Pagamento = modelPagamento.pagamento(queryVencimento)
+                    Pagamento.excluirPagamento() 
+
+                self.carregarDoBanco()
+                self.statusbar.SetStatusText("ID contrato: {id}".format(id=self.idContrato))
     
     def carregarDoBanco(self):
         self.listaDeVencimentos.DeleteAllItems()
@@ -78,13 +168,28 @@ class viwerGerenciarVencimentos(object):
                 self.index += 1
         else:
             dados = geCDP.queryTabelaComWhere(tabela="CONTRATO",coluna="id",dado=self.idContrato)
+            
+            dlgParcelas = wx.TextEntryDialog(self.panel,"Quandos meses terá esse contrato?", "Parcelas de pagamento", style=wx.OK|wx.CANCEL)
+            resultado = dlgParcelas.ShowModal()
+            
+            if resultado == wx.ID_OK:
+               parcelas = int(dlgParcelas.GetValue())
+
+            
+            count = 0
+            dlg_carregar = wx.ProgressDialog("Processando", "Criando vencimentos", maximum=parcelas, parent=self.frame ,style= wx.PD_APP_MODAL | wx.PD_AUTO_HIDE)
             for queryContrato in dados:
                 Contrato = modelContrato.contrato(queryContrato)
-                vencimentos = Contrato.gerarVencimentos()
+                vencimentos = Contrato.gerarVencimentos(total=parcelas)
                 for vencimento in vencimentos:
-                    Pagamento = modelPagamento.pagamento((self.idContrato,vencimento),tipo=2)
-                    Pagamento.inserirNovoPagamento()
+                    Pagamento = modelPagamento.pagamento((self.idContrato,vencimento),tipo=3)
+                    Pagamento.inserirNovoPagamentoAutomatico()
+                    if count < parcelas: 
+                        dlg_carregar.Update(count+1)
             
+            
+            
+            dlg_carregar.Destroy()
             self.carregarDoBanco()
 
         
