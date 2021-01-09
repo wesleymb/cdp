@@ -74,7 +74,7 @@ def gerarRelatorio(idContrato):
             <th>Status</th>
             </tr>""".format(contrato=Contrato.contrato,numeroDeProcesso=Contrato.numeroDeProcesso,empresa=Contrato.empresa)
         
-        with open('{contrato}_{date}.html'.format(contrato=Contrato.empresa,date=datetime.date.today()), 'w+') as arqRelat:
+        with open('{contrato}_{objeto}_{date}.html'.format(contrato=Contrato.empresa,objeto=Contrato.objeto,date=datetime.date.today()), 'w+') as arqRelat:
             arqRelat.write(html1)
             arqRelat.write(html2)
             
@@ -125,7 +125,7 @@ def gerarRelatorio(idContrato):
             </tr>""")
 
             
-
+            total = 0
             for queryPagamento in geCDP.queryTabelaComWhere(tabela="PAGAMENTO",coluna="idContrato",dado=idContrato):
                 
                 Pagamento = modelPagamento.pagamento(queryPagamento)
@@ -137,9 +137,11 @@ def gerarRelatorio(idContrato):
                 arqRelat.write("<td>{numeroDeProcesso}</td>".format(numeroDeProcesso=Pagamento.numeroDeProcesso))
                 arqRelat.write('<tr>')
 
-            arqRelat.write("""</table>
-            <h4>Data e hora: {horaEdata}</h4>
-            </body>
+                total= Pagamento.valor + total
+
+            arqRelat.write('''</table><h4>Total: R$ {total}</h4>'''.format(total=total))
+
+            arqRelat.write("""</br><h4>Data e hora: {horaEdata}</h4></body>
             </html>""".format(horaEdata=datetime.datetime.now().strftime("%c")))
             arqRelat.close()
 
