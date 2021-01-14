@@ -21,6 +21,9 @@ class gerenciarVencimentos(object):
         self.index = 0
         self.statusbar =  self.frame.CreateStatusBar(1)
 
+        self.icon = wx.Icon(wx.Image('icon.png',wx.BITMAP_TYPE_PNG).ConvertToBitmap())
+        self.frame.SetIcon(self.icon)
+
         self.statusbar.SetStatusText("ID contrato: {id}".format(id=self.idContrato))
 
         wx.StaticText(self.panel, wx.ID_ANY, "Valor", (25, 25))

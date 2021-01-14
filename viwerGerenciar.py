@@ -7,6 +7,7 @@ import modelFiscal
 import modelNovoFiscal
 import viwerGerenciarVencimentos
 import geRelatorioContrato
+import viwerGerenciarAditivo
 
 
 LISTA_DE_FRAMES= []
@@ -40,7 +41,8 @@ class viwerGerenciar(object):
 
         self.menu_arquivo = wx.Menu()
         self.abaGerenciarVencimentos = self.menu_arquivo.Append(wx.ID_ANY, "Gerenciar vencimentos", "Gerenciar vencimentos")
-        self.abaGerarRelatorico = self.menu_arquivo.Append(wx.ID_ANY, "Gerar Relatório", "Gerar Relatório")
+        self.abaGerarAditivos = self.menu_arquivo.Append(wx.ID_ANY, "Gerar aditivos", "Gerar aditivos")
+        self.abaGerarRelatorico = self.menu_arquivo.Append(wx.ID_ANY, "Gerar relatório", "Gerar relatório")
         self.abaGerarOrdemDeServico = self.menu_arquivo.Append(wx.ID_ANY, "Gerar ordem de serviço", "Gerar ordem de serviço")
 
         self.menu_bar = wx.MenuBar()
@@ -110,6 +112,7 @@ class viwerGerenciar(object):
         
         self.frame.Bind(wx.EVT_MENU, self.abrirviwerGerenciarVencimentos , self.abaGerenciarVencimentos)
         self.frame.Bind(wx.EVT_MENU, self.gerarRelatorioDeContrato , self.abaGerarRelatorico)
+        self.frame.Bind(wx.EVT_MENU, self.abrirviwerGerenciarAditivo , self.abaGerarAditivos)
         
         self.queryDeCarregamentoDeDadosContrato()
         self.queryDeCarregamentoDeDadosFiscais()
@@ -117,6 +120,11 @@ class viwerGerenciar(object):
         self.frame.Show()
         self.frame.Centre()
 
+    
+    def abrirviwerGerenciarAditivo(self,event):
+        telaGerenciarAditivo = viwerGerenciarAditivo.gerenciarAditivos(idContrato=self.idContrato)
+        print(telaGerenciarAditivo.frame)
+        contador_de_frames(telaGerenciarAditivo.frame)
     
     def gerarRelatorioDeContrato(self,event):
         dlgGerarRelatorio = wx.MessageDialog(None , "Deseja gerar relatório do contrato?", "Gerar relatório",wx.YES_NO | wx.ICON_INFORMATION)

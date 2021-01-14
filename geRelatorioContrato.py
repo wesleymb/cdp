@@ -6,8 +6,9 @@ import modelPagamento
 import modelFiscal
 
 
-def gerarRelatorio(idContrato):
 
+def gerarRelatorio(idContrato):
+    
     for queryContrato in geCDP.queryTabelaComWhere(tabela="CONTRATO",coluna="ID",dado=idContrato):
         Contrato = modelContrato.contrato(queryContrato)
             
@@ -74,7 +75,10 @@ def gerarRelatorio(idContrato):
             <th>Status</th>
             </tr>""".format(contrato=Contrato.contrato,numeroDeProcesso=Contrato.numeroDeProcesso,empresa=Contrato.empresa)
         
-        with open('{contrato}_{objeto}_{date}.html'.format(contrato=Contrato.empresa,objeto=Contrato.objeto,date=datetime.date.today()), 'w+') as arqRelat:
+        nomeRelatorioHtml = '{contrato}_{objeto}_{date}.html'.format(contrato=Contrato.empresa,objeto=Contrato.objeto,date=datetime.date.today())
+        nomeRelatorioPdf = '{contrato}_{objeto}_{date}.pdf'.format(contrato=Contrato.empresa,objeto=Contrato.objeto,date=datetime.date.today())
+
+        with open(nomeRelatorioHtml, 'w+') as arqRelat:
             arqRelat.write(html1)
             arqRelat.write(html2)
             
@@ -145,6 +149,7 @@ def gerarRelatorio(idContrato):
             </html>""".format(horaEdata=datetime.datetime.now().strftime("%c")))
             arqRelat.close()
 
+        
         # self.dataDePagamento = self.listaDedados[2]
         # self.valor = self.listaDedados[3]
         # self.status = self.listaDedados[4]

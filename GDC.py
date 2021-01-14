@@ -53,7 +53,7 @@ class viwerGDC(object):
 
         self.comboOpcoes = ['ID','Contrato','Processo','Objeto','Empresa']
 
-        self.comboFiltro = wx.ComboBox(self.panel, wx.ID_ANY, pos = (575,25), choices = self.comboOpcoes, style=wx.CB_READONLY)
+        self.comboFiltro = wx.ComboBox(self.panel, wx.ID_ANY, value='ID',pos = (575,25), choices = self.comboOpcoes, style=wx.CB_READONLY)
 
         self.buttonFiltar = wx.Button(self.panel, wx.ID_ANY, 'Filtar', (675, 25),size=(100,-1))
 
@@ -107,7 +107,7 @@ class viwerGDC(object):
     
     
     def atulizarLista(self,event):
-        self.carregaDadosContratos()
+        self.carregaDadosContratosFiltrados(event=None)
     
     def carregaDadosContratosFiltrados(self,event):
 

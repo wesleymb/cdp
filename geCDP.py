@@ -10,11 +10,14 @@ def criarBanco():
         criarTabelaFiscal()
         criarTabelaServidor()
         criarTabelaPagamento()
+        criarTabelaAditivo()
+
         
         inserMassaDeDadosContrato()
         inserMassaDeDadosServidor()
         inserMassaDeDadosFiscal()
         # inserMassaDeDadosPagamento()
+        inserMassaDeDadosAditivo()
 
         print("Banco Criado com sucesso.")
 
@@ -75,6 +78,18 @@ def criarTabelaFiscal():
         PRIMARY KEY (id),
         FOREIGN KEY (idContrato) REFERENCES CONTRATO(id),
         FOREIGN KEY (idServidor) REFERENCES SERVIDOR(id)
+        )""")
+
+def criarTabelaAditivo():
+    sql("""CREATE TABLE IF NOT EXISTS ADITIVO(
+        id INTEGER,
+        idContrato INT,
+        valor NUMERIC, 
+        dataAssinatura date, 
+        dataTermino date,
+        status text,
+        PRIMARY KEY (id),
+        FOREIGN KEY (idContrato) REFERENCES CONTRATO(id)
         )""")
 
 
@@ -150,6 +165,16 @@ def inserMassaDeDadosPagamento():
     sql("""INSERT INTO PAGAMENTO (idContrato, dataDePagamento, valor, status, numeroDeProcesso) 
         VALUES(1,"2020-12-13",500.10, "PAGO", "SEI-170026/002148/2020")""")
 
+def inserMassaDeDadosAditivo():
+    sql("""INSERT INTO ADITIVO (idContrato, valor, dataAssinatura, dataTermino, status) 
+        VALUES(1,500.10, "2020-12-13", "2021-12-13","ATIVO")""")
+
+
+        # idContrato INT,
+        # valor NUMERIC, 
+        # dataAssinatura date, 
+        # dataTermino date,
+        # status text,
 
 def queryTabelaServidorComContrato(servidor):
     c,connection = conectar()
@@ -177,6 +202,11 @@ def queryTabelaFiscalComContrato(idServidor):
         lista.append(linha)
     connection.close()
     return lista
+
+def inserNovoAditivo(idContrato,valor,dataAssinatura,dataTermino,status):
+    sql("""INSERT INTO ADITIVO (idContrato, valor, dataAssinatura, dataTermino, status) 
+        VALUES({idContrato},{valor}, "{dataAssinatura}", "{dataTermino}","{status}")""".format(idContrato=idContrato,valor=valor,dataAssinatura=dataAssinatura,dataTermino=dataTermino,status=status))
+
 
 def inserNovoContrato(contrato,numeroDeProcesso,objeto,empresa,dataAssinatura,dataTermino,vencimento,status):
     sql("""INSERT INTO CONTRATO (contrato, numeroDeProcesso, objeto, empresa, dataAssinatura, dataTermino, vencimento, status)
@@ -227,6 +257,10 @@ def excluirPagamento(idPagamento):
     sql("""DELETE FROM PAGAMENTO WHERE id = {idPagamento}"""
     .format(idPagamento=idPagamento))
 
+def excluirAditivo(idAditivo):
+    sql("""DELETE FROM ADITIVO WHERE id = {idAditivo}"""
+    .format(idAditivo=idAditivo))
+
 def excluirContrato(idContrato):
     sql("""DELETE FROM CONTRATO WHERE ID = {idContrato}""".format(idContrato=idContrato))
     sql("""DELETE FROM FISCAL WHERE FISCAL.idContrato = {idContrato}""".format(idContrato=idContrato))
@@ -269,8 +303,9 @@ if __name__ == "__main__":
     # excluirPagamento(idPagamento=1)
     # # # inserMassaDeDadosFiscal()
     # # # x = queryTabelaComWhereLike(tabela='CONTRATO',coluna='OBJETO',dado='CENT')
-    # x = queryTabela(tabela="PAGAMENTO")
-    # # # # x = queryTabelaServidorComContrato(servidor =  2)
-    # # # x = queryTabelaFiscalComContrato(idServidor=3)
-    # for i in x:
-    #     print(i)
+    # inserMassaDeDadosAditivo()
+    x = queryTabela(tabela="ADITIVO")
+    # # # # # x = queryTabelaServidorComContrato(servidor =  2)
+    # # # # x = queryTabelaFiscalComContrato(idServidor=3)
+    for i in x:
+        print(i)
