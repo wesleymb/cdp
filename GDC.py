@@ -5,6 +5,7 @@ import modelContrato
 import viwerGerenciar
 import viwerServidores
 import viwerRelatorioServidor
+import geRelatorioVerificarPrazos
 
 LISTA_DE_FRAMES= []
 def contador_de_frames(frame):
@@ -33,9 +34,12 @@ class viwerGDC(object):
         self.menu_arquivo = wx.Menu()
         self.abaNovoContrato = self.menu_arquivo.Append(wx.ID_ANY, "Novo Contrato", "Novo Contrato")
         self.abaGerenciarServidores = self.menu_arquivo.Append(wx.ID_ANY, "Gerenciar servidores", "Gerenciar servidores")
+        self.abaVerificarPrazos = self.menu_arquivo.Append(wx.ID_ANY, "Verificar prazos", "Verificar prazos")
+
 
         self.menuRelatorio = wx.Menu()
         self.abaRelatorioServidor = self.menuRelatorio.Append(wx.ID_ANY, "Relatório servidor", "Relatório servidor")
+        self.abaRelatorioContratosParaVencer = self.menuRelatorio.Append(wx.ID_ANY, "Relatório de prazos para vencer", "Relatório de prazos para vencer")
 
         self.menuAjuda = wx.Menu()
         self.abaAjuda = self.menuAjuda.Append(wx.ID_ANY, "Ajuda", "Ajuda")
@@ -92,16 +96,36 @@ class viwerGDC(object):
         self.frame.Bind(wx.EVT_MENU, self.abrirviwerServidores, self.abaGerenciarServidores)
         self.frame.Bind(wx.EVT_MENU, self.abrirviwerNovoContrato, self.abaNovoContrato)
         self.frame.Bind(wx.EVT_MENU, self.abrirviwerRelatorioServidor, self.abaRelatorioServidor)
+        self.frame.Bind(wx.EVT_MENU, self.consultarContratosComFuturoVencimento, self.abaVerificarPrazos)
+        self.frame.Bind(wx.EVT_MENU, self.gerarRelatorioContratosParaVencer, self.abaRelatorioContratosParaVencer)
         self.frame.Bind(wx.EVT_MENU, self.abrirAjuda, self.abaAjuda)
             
 
 
         self.carregaDadosContratos()
+        self.consultarContratosComFuturoVencimento(event=None)
 
         self.frame.Show()
         self.frame.Centre()
 
     
+    def gerarRelatorioContratosParaVencer(self,event):
+        geRelatorioVerificarPrazos.gerarRelatorioContratosComFuturoVencimento()
+        dlgRelatorio = wx.MessageDialog(None , "Relatório criado com sucesso","Pronto", wx.OK| wx.ICON_INFORMATION)
+        dlgRelatorio.ShowModal()
+    
+    def consultarContratosComFuturoVencimento(self,event):
+        listaDeContratosVencidos = []
+        for queryContrato in geCDP.queryTabela(tabela="CONTRATO"):
+            Contrato = modelContrato.contrato(queryContrato)
+            if Contrato.verificarPrazoDeVencimentoDeContrato() == True:
+                listaDeContratosVencidos.append("Contrato: {}, {}, {}, {}".format(Contrato.contrato, Contrato.objeto, Contrato.empresa, Contrato.dataTermino))
+                
+        
+        if listaDeContratosVencidos != []:
+            dlgContratoParaVencer = wx.MessageDialog(None , "\n \n".join(listaDeContratosVencidos), "Alerta",wx.ICON_WARNING)
+            dlgContratoParaVencer.ShowModal()
+
     def fechar(self,event):
         self.frame.Destroy()
     

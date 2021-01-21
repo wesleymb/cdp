@@ -41,7 +41,7 @@ class viwerGerenciar(object):
 
         self.menu_arquivo = wx.Menu()
         self.abaGerenciarVencimentos = self.menu_arquivo.Append(wx.ID_ANY, "Gerenciar vencimentos", "Gerenciar vencimentos")
-        self.abaGerarAditivos = self.menu_arquivo.Append(wx.ID_ANY, "Gerar aditivos", "Gerar aditivos")
+        self.abaGerarAditivos = self.menu_arquivo.Append(wx.ID_ANY, "Gerenciar aditivos", "Gerenciar aditivos")
         self.abaGerarRelatorico = self.menu_arquivo.Append(wx.ID_ANY, "Gerar relatório", "Gerar relatório")
         self.abaGerarOrdemDeServico = self.menu_arquivo.Append(wx.ID_ANY, "Gerar ordem de serviço", "Gerar ordem de serviço")
 

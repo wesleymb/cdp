@@ -22,6 +22,16 @@ def gerarRelatorio(idContrato):
             width: 100%;
             }
 
+            hr { 
+            display: block;
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+            margin-left: auto;
+            margin-right: auto;
+            border-style: inset;
+            border-width: 1px;
+            } 
+            
             h4{
                 font-family: arial,sans-serif;
             }
@@ -58,8 +68,9 @@ def gerarRelatorio(idContrato):
             </tr>
 
         </h4>
-
+        
         <h4>
+            <hr>
             <td>Dados do contrato</td>
         </h4>
 
@@ -97,7 +108,10 @@ def gerarRelatorio(idContrato):
             arqRelat.write("""
             </table>
             </br>
+            
+            
             <h4>
+                <hr>
                 <td>Fiscais</td>
             </h4>
             <table>
@@ -117,7 +131,9 @@ def gerarRelatorio(idContrato):
             arqRelat.write("""
             </table>
             </br>
+            
             <h4>
+                <hr>
                 <td>Pagamentos</td>
             </h4>
             <table>
@@ -141,9 +157,10 @@ def gerarRelatorio(idContrato):
                 arqRelat.write("<td>{numeroDeProcesso}</td>".format(numeroDeProcesso=Pagamento.numeroDeProcesso))
                 arqRelat.write('<tr>')
 
-                total= Pagamento.valor + total
+                if Pagamento.valor != '':
+                    total = Pagamento.valor + total
 
-            arqRelat.write('''</table><h4>Total: R$ {total}</h4>'''.format(total=total))
+            arqRelat.write('''</table><h4>Total: R$ {total}</h4><hr>'''.format(total=total))
 
             arqRelat.write("""</br><h4>Data e hora: {horaEdata}</h4></body>
             </html>""".format(horaEdata=datetime.datetime.now().strftime("%c")))

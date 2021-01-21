@@ -77,7 +77,7 @@ class relatorio:
 
         # with open(os.path.join(os.environ['USERPROFILE'], 'Desktop','{nome}_{id}.html'.format(nome=self.nome,id=self.idFuncional)), 'a+') as arqRelat:
 
-        with open('{nome}_{id}.html'.format(nome=self.nome,id=self.idFuncional), 'a+') as arqRelat:
+        with open('{nome}_{id}.html'.format(nome=self.nome,id=self.idFuncional), 'w+') as arqRelat:
                 arqRelat.write(html1)
                 arqRelat.write(html2)
                 for Fiscal in self.listaServidoresFiscal:
