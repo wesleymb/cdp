@@ -1,5 +1,6 @@
 import wx
 import geCDP
+import os
 import viwerNovoContrato
 import modelContrato
 import viwerGerenciar
@@ -13,14 +14,21 @@ def contador_de_frames(frame):
 
 
 def main():
-    viwerGDC()
+    if "bd_cdp.db" not in os.listdir():
+        geCDP.criarBanco()
+        viwerGDC()
+        if "relatorios" not in os.listdir():
+            os.makedirs("relatorios")
+    else:
+        viwerGDC()
+        if "relatorios" not in os.listdir():
+            os.makedirs("relatorios")
 
 class viwerGDC(object):
     """docstring for viwerGDC"""
     def __init__(self):
         super(viwerGDC, self).__init__()
-
-        self.frame = wx.Frame(None, -1, 'Gerenciador de contratos', style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
+        self.frame = wx.Frame(None, -1, 'Gerenciador de contratos', style= wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
         self.frame.SetDimensions(0,0,1224,600)
         self.panel = wx.Panel(self.frame)
         self.index = 0

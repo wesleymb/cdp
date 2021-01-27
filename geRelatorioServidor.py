@@ -47,7 +47,7 @@ class relatorio:
             </head>
             <body>
 
-            <h1><img src="icon.png" alt="Brasão" width="15%" height="15%"></h1>
+            <h1><img src="../icon.png" alt="Brasão" width="15%" height="15%"></h1>
             <h2>Relatório do servidor</h2>"""
 
         html2 = """
@@ -77,7 +77,7 @@ class relatorio:
 
         # with open(os.path.join(os.environ['USERPROFILE'], 'Desktop','{nome}_{id}.html'.format(nome=self.nome,id=self.idFuncional)), 'a+') as arqRelat:
 
-        with open('{nome}_{id}.html'.format(nome=self.nome,id=self.idFuncional), 'w+') as arqRelat:
+        with open('relatorios\\{nome}_{id}.html'.format(nome=self.nome,id=self.idFuncional), 'w+') as arqRelat:
                 arqRelat.write(html1)
                 arqRelat.write(html2)
                 for Fiscal in self.listaServidoresFiscal:

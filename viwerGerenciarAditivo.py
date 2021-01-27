@@ -54,9 +54,9 @@ class gerenciarAditivos(object):
         self.buttonExcluir = wx.Button(self.panel, wx.ID_ANY, 'Excluir', (425, 75),size=(100,-1))
         self.buttonAlterar = wx.Button(self.panel, wx.ID_ANY, 'Alterar', (425, 100),size=(100,-1))
         
-        # self.listaDeAditivos.Bind(wx.EVT_LIST_ITEM_ACTIVATED,self.carregarCampos)
+        self.listaDeAditivos.Bind(wx.EVT_LIST_ITEM_ACTIVATED,self.carregarCampos)
         
-        # self.buttonAlterar.Bind(wx.EVT_BUTTON, self.alterar)
+        self.buttonAlterar.Bind(wx.EVT_BUTTON, self.alterar)
         self.buttonIncluir.Bind(wx.EVT_BUTTON, self.incluir)
         self.buttonExcluir.Bind(wx.EVT_BUTTON, self.excluir)
 
@@ -65,6 +65,49 @@ class gerenciarAditivos(object):
 
         self.frame.Show()
         self.frame.Centre()
+
+    def alterar (self,event):
+        idAditivo = self.idAditivo
+        idContrato = self.idContrato
+        valor = self.valor.GetValue()
+        status = self.comboStatus.GetValue()
+        assinatura = self.calendarioAssinatura.GetValue().FormatISODate()
+        termino = self.calendarioTermino.GetValue().FormatISODate()
+        tuplaDeDados = (idAditivo,idContrato,valor,assinatura,termino,status)
+        Aditivo = modelAditivo.aditivo(tuplaDeDados)
+        Aditivo.ataulizarAditivo()
+
+        
+        self.valor.SetValue(0)
+        self.comboStatus.SetValue('')
+        self.calendarioAssinatura.SetValue(datetime.date.today())
+        self.calendarioTermino.SetValue(datetime.date.today())
+
+        self.idAditivo = ''
+
+        self.statusbar.SetStatusText("ID contrato: {id}".format(id=self.idContrato))
+
+        self.carregarDoBanco()
+        
+        dlgAtulizacao = wx.MessageDialog(None , "Aditivo atulizado com sucesso","Pronto", wx.OK| wx.ICON_INFORMATION)
+        dlgAtulizacao.ShowModal()  
+
+
+
+    def carregarCampos(self,event):
+        item = self.listaDeAditivos.GetFocusedItem()
+        
+        if item != -1:
+            self.idAditivo = self.listaDeAditivos.GetItem(itemIdx=item, col=0).GetText()
+
+            for queryAditivo in geCDP.queryTabelaComWhere(tabela="ADITIVO",coluna="ID",dado=self.idAditivo):
+                Aditivo = modelAditivo.aditivo(queryAditivo)
+                self.valor.SetValue(Aditivo.valor)
+                self.comboStatus.SetValue(Aditivo.status)
+                self.calendarioAssinatura.SetValue(Aditivo.dataAssinaturaTipoDate)
+                self.calendarioTermino.SetValue(Aditivo.dataTerminoTipoDate)
+
+                self.statusbar.SetStatusText("ID aditivo: {id}".format(id=self.idAditivo))
 
     def carregarDoBanco(self):
         self.index = 0

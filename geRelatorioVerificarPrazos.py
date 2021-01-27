@@ -38,7 +38,7 @@ def gerarRelatorioContratosComFuturoVencimento():
             </head>
             <body>
 
-            <h1><img src="icon.png" alt="Brasão" width="15%" height="15%"></h1>
+            <h1><img src="../icon.png" alt="Brasão" width="15%" height="15%"></h1>
             <h2>Relatório de contratos com prazos para vencer</h2>"""
 
     html2 = """
@@ -54,7 +54,7 @@ def gerarRelatorioContratosComFuturoVencimento():
             <th>Status</th>
             </tr>"""
     
-    nomeRelatorioHtml = "Relatorio prazos para vencer.html"
+    nomeRelatorioHtml = "relatorios\\Relatorio prazos para vencer.html"
 
     with open(nomeRelatorioHtml, 'w+') as arqRelat:
         arqRelat.write(html1)

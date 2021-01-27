@@ -288,12 +288,16 @@ def ataulizarPagamento(dataDePagamento,valor,status,numeroDeProcesso,idPagamento
     sql("""UPDATE PAGAMENTO SET 
     dataDePagamento = "{dataDePagamento}", valor = {valor}, numeroDeProcesso = "{numeroDeProcesso}", status = "{status}" WHERE id = {idPagamento}""".format(dataDePagamento=dataDePagamento,valor=valor,numeroDeProcesso=numeroDeProcesso,status=status,idPagamento=idPagamento))
 
+def ataulizarAditivo(valor,dataAssinatura,dataTermino,status,idAditivo):
+    sql("""UPDATE ADITIVO SET valor = "{valor}", dataAssinatura = "{dataAssinatura}" , dataTermino = "{dataTermino}", status = "{status}" WHERE id = {idAditivo}""".format(valor=valor,dataAssinatura=dataAssinatura,dataTermino=dataTermino,status=status,idAditivo=idAditivo))
 
-        
-        # dataDePagamento date,  
-        # valor NUMERIC,
-        # status text,
-        # numeroDeProcesso text, 
+
+        # id INTEGER,
+        # idContrato INT,
+        # valor NUMERIC, 
+        # dataAssinatura date, 
+        # dataTermino date,
+        # status text,    
 
 
 

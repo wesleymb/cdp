@@ -3,8 +3,8 @@
 block_cipher = None
 
 
-a = Analysis(['d:\\Users\\Wesley\\Documents\\SEINFRA\\cdp\\GDC.py'],
-             pathex=['d:\\Users\\Wesley\\Documents\\SEINFRA\\cdp\\Compilado'],
+a = Analysis(['..\\GDC.py'],
+             pathex=['C:\\Users\\Jericho\\Desktop\\cdp\\Compilado'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -30,4 +30,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=False , icon='d:\\Users\\Wesley\\Documents\\SEINFRA\\cdp\\icon.ico')
+          console=False , icon='..\\icon.ico')

@@ -56,7 +56,7 @@ def gerarRelatorio(idContrato):
             </head>
             <body>
 
-            <h1><img src="icon.png" alt="Brasão" width="15%" height="15%"></h1>
+            <h1><img src="../icon.png" alt="Brasão" width="15%" height="15%"></h1>
             <h2>Relatório do Contrato</h2>"""
 
         html2 = """
@@ -86,8 +86,8 @@ def gerarRelatorio(idContrato):
             <th>Status</th>
             </tr>""".format(contrato=Contrato.contrato,numeroDeProcesso=Contrato.numeroDeProcesso,empresa=Contrato.empresa)
         
-        nomeRelatorioHtml = '{contrato}_{objeto}_{date}.html'.format(contrato=Contrato.empresa,objeto=Contrato.objeto,date=datetime.date.today())
-        nomeRelatorioPdf = '{contrato}_{objeto}_{date}.pdf'.format(contrato=Contrato.empresa,objeto=Contrato.objeto,date=datetime.date.today())
+        nomeRelatorioHtml = 'relatorios\\{contrato}_{objeto}_{date}.html'.format(contrato=Contrato.empresa,objeto=Contrato.objeto,date=datetime.date.today())
+        nomeRelatorioPdf = 'relatorios\\{contrato}_{objeto}_{date}.pdf'.format(contrato=Contrato.empresa,objeto=Contrato.objeto,date=datetime.date.today())
 
         with open(nomeRelatorioHtml, 'w+') as arqRelat:
             arqRelat.write(html1)
