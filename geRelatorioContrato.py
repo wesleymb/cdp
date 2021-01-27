@@ -15,44 +15,7 @@ def gerarRelatorio(idContrato):
         html1 ="""<!DOCTYPE html>
             <html>
             <head>
-            <style>
-            table {
-            font-family: arial, sans-serif;
-            border-collapse: collapse;
-            width: 100%;
-            }
-
-            hr { 
-            display: block;
-            margin-top: 0.5em;
-            margin-bottom: 0.5em;
-            margin-left: auto;
-            margin-right: auto;
-            border-style: inset;
-            border-width: 1px;
-            } 
-            
-            h4{
-                font-family: arial,sans-serif;
-            }
-
-            td, th {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
-            }
-
-            h1,h2{
-                font-family: arial, sans-serif;
-                text-align: center;
-                
-            }
-
-
-            tr:nth-child(even) {
-            background-color: #dddddd;
-            }
-            </style>
+            <link rel="stylesheet" type="text/css" href="../estilos.css"/>
             </head>
             <body>
 
