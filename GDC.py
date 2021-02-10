@@ -19,11 +19,16 @@ def main():
         viwerGDC()
         if "relatorios" not in os.listdir():
             os.makedirs("relatorios")
+        if "documentos" not in os.listdir():
+            os.makedirs("documentos")
     else:
         viwerGDC()
         if "relatorios" not in os.listdir():
             os.makedirs("relatorios")
+        if "documentos" not in os.listdir():
+            os.makedirs("documentos")
 
+        
 class viwerGDC(object):
     """docstring for viwerGDC"""
     def __init__(self):
