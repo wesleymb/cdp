@@ -131,7 +131,7 @@ class viwerGDC(object):
         listaDeContratosVencidos = []
         for queryContrato in geCDP.queryTabela(tabela="CONTRATO"):
             Contrato = modelContrato.contrato(queryContrato)
-            if Contrato.verificarPrazoDeVencimentoDeContrato() == True:
+            if Contrato.verificarPrazoDeVencimentoDeContrato() == True and Contrato.status == "ATIVO":
                 listaDeContratosVencidos.append("Contrato: {}, {}, {}, {}".format(Contrato.contrato, Contrato.objeto, Contrato.empresa, Contrato.dataTermino))
                 
         

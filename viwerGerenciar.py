@@ -8,6 +8,7 @@ import modelNovoFiscal
 import viwerGerenciarVencimentos
 import geRelatorioContrato
 import viwerGerenciarAditivo
+import viwerDocumentos
 
 
 LISTA_DE_FRAMES= []
@@ -44,6 +45,8 @@ class viwerGerenciar(object):
         self.abaGerarAditivos = self.menu_arquivo.Append(wx.ID_ANY, "Gerenciar aditivos", "Gerenciar aditivos")
         self.abaGerarRelatorico = self.menu_arquivo.Append(wx.ID_ANY, "Gerar relatório", "Gerar relatório")
         self.abaGerarOrdemDeServico = self.menu_arquivo.Append(wx.ID_ANY, "Gerar ordem de serviço", "Gerar ordem de serviço")
+        self.abaDocumentos = self.menu_arquivo.Append(wx.ID_ANY, "Documentos", "Documentos")
+
 
         self.menu_bar = wx.MenuBar()
         self.menu_bar.Append(self.menu_arquivo,"Arquivo")
@@ -68,11 +71,11 @@ class viwerGerenciar(object):
         wx.StaticText(self.panel, wx.ID_ANY, "Status", (350, 25))
         self.comboStatus = wx.ComboBox(self.panel, wx.ID_ANY, pos = (400,25), choices = self.comboOpcoes, style=wx.CB_READONLY)
         
-        wx.StaticText(self.panel, wx.ID_ANY, "Objeto", (25, 125))
-        self.objeto = wx.TextCtrl(self.panel, wx.ID_ANY,"", (100, 125),size=(200, -1))
+        wx.StaticText(self.panel, wx.ID_ANY, "Objeto", (25, 110))
+        self.objeto = wx.TextCtrl(self.panel, wx.ID_ANY,"", (100, 110),size=(225, 50),style=wx.TE_MULTILINE)
 
         wx.StaticText(self.panel, wx.ID_ANY, "Empresa", (25, 175))
-        self.empresa = wx.TextCtrl(self.panel, wx.ID_ANY,"", (100, 175),size=(200, -1))
+        self.empresa = wx.TextCtrl(self.panel, wx.ID_ANY,"", (100, 175),size=(225, -1),style=wx.TE_MULTILINE)
 
         wx.StaticText(self.panel, wx.ID_ANY, "Data da assinatura:", (25, 225))
         self.calendarioAssinatura = wx.adv.DatePickerCtrl(self.panel, wx.ID_ANY, pos= (25, 250), style=wx.adv.DP_DROPDOWN)
@@ -113,17 +116,22 @@ class viwerGerenciar(object):
         self.frame.Bind(wx.EVT_MENU, self.abrirviwerGerenciarVencimentos , self.abaGerenciarVencimentos)
         self.frame.Bind(wx.EVT_MENU, self.gerarRelatorioDeContrato , self.abaGerarRelatorico)
         self.frame.Bind(wx.EVT_MENU, self.abrirviwerGerenciarAditivo , self.abaGerarAditivos)
+        self.frame.Bind(wx.EVT_MENU, self.abrirviwerDocumentos , self.abaDocumentos)
         
+
         self.queryDeCarregamentoDeDadosContrato()
         self.queryDeCarregamentoDeDadosFiscais()
 
         self.frame.Show()
         self.frame.Centre()
 
+    def abrirviwerDocumentos(self,event):
+        telaDocumentos = viwerDocumentos.viwerDocumentos(idContrato=self.idContrato)
+        contador_de_frames(telaDocumentos.frame)
+    
     
     def abrirviwerGerenciarAditivo(self,event):
         telaGerenciarAditivo = viwerGerenciarAditivo.gerenciarAditivos(idContrato=self.idContrato)
-        print(telaGerenciarAditivo.frame)
         contador_de_frames(telaGerenciarAditivo.frame)
     
     def gerarRelatorioDeContrato(self,event):

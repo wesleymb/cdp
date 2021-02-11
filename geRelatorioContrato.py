@@ -124,6 +124,13 @@ def gerarRelatorio(idContrato):
                     total = Pagamento.valor + total
 
             arqRelat.write('''</table><h4>Total: R$ {total}</h4><hr>'''.format(total=total))
+            arqRelat.write(
+                '''<table>
+                    <tr>
+                        <th>Observação</th>
+                    </tr>
+                        <td>{observacao}</td>
+                </table>'''.format(observacao=Contrato.observacao))
 
             arqRelat.write("""</br><h4>Data e hora: {horaEdata}</h4></body>
             </html>""".format(horaEdata=datetime.datetime.now().strftime("%c")))
