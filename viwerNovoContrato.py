@@ -3,7 +3,6 @@ import wx.adv
 import geCDP
 import modelNovoContrato
 import datetime
-import GDC
 
 
 
