@@ -46,15 +46,16 @@ class viwerGDC(object):
         self.frame.SetMenuBar(self.menu_bar)
 
 
-        wx.StaticText(self.panel, wx.ID_ANY, "Filtra", (25, 25))
-        self.txtFiltro = wx.TextCtrl(self.panel, wx.ID_ANY,"", (60, 25),size=(500, -1),style=wx.TE_PROCESS_ENTER)
+        wx.StaticText(self.panel, wx.ID_ANY, "Filtrar", (25, 25))
+        self.txtFiltro = wx.TextCtrl(self.panel, wx.ID_ANY,"", (70, 25),size=(500, -1),style=wx.TE_PROCESS_ENTER)
         self.txtFiltro.Bind(wx.EVT_TEXT_ENTER, self.carregaDadosContratosFiltrados)
 
         self.comboOpcoes = ['ID','Contrato','Processo','Objeto','Empresa']
 
-        self.comboFiltro = wx.ComboBox(self.panel, wx.ID_ANY, value='ID',pos = (575,25), choices = self.comboOpcoes, style=wx.CB_READONLY)
+        self.comboFiltro = wx.ComboBox(self.panel, wx.ID_ANY, value='ID',pos = (595,25), choices = self.comboOpcoes, style=wx.CB_READONLY)
 
-        self.buttonFiltar = wx.Button(self.panel, wx.ID_ANY, 'Filtar', (675, 25),size=(100,-1))
+        
+        self.buttonFiltar = wx.Button(self.panel, wx.ID_ANY, 'Filtar', (715, 25),size=(100,-1))
 
         self.listaDeContratos = wx.ListCtrl(self.panel,style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_HRULES|wx.LC_AUTOARRANGE,size=(1055,450), pos=(20,60))      
         self.listaDeContratos.InsertColumn(0,"ID",width=50)
@@ -73,10 +74,10 @@ class viwerGDC(object):
 
 
         self.button_novo = wx.Button(self.panel, wx.ID_ANY, 'Novo', (1090, 60),size=(100,-1))
-        self.buttonGerenciar = wx.Button(self.panel, wx.ID_ANY, 'Gerenciar', (1090, 85),size=(100,-1))
-        self.button_atulizar = wx.Button(self.panel, wx.ID_ANY, 'Atualizar', (1090, 115),size=(100,-1))
+        self.buttonGerenciar = wx.Button(self.panel, wx.ID_ANY, 'Gerenciar', (1090, 95),size=(100,-1))
+        self.button_atulizar = wx.Button(self.panel, wx.ID_ANY, 'Atualizar', (1090, 130),size=(100,-1))
         
-        self.button_excluir = wx.Button(self.panel, wx.ID_ANY, 'Excluir', (1090, 160),size=(100,-1))
+        self.button_excluir = wx.Button(self.panel, wx.ID_ANY, 'Excluir', (1090, 175),size=(100,-1))
 
         self.buttonFechar = wx.Button(self.panel, wx.ID_ANY, 'Fechar', (1090, 475),size=(100,-1))
 
@@ -213,7 +214,7 @@ class viwerGDC(object):
         if item != -1:
             idContrato = self.listaDeContratos.GetItem(itemIdx=item, col=0).GetText()
         
-            telaContrato = viwerGerenciar.viwerGerenciar(idContrato=idContrato)
+            telaContrato = viwerGerenciar.viwerGerenciar(idContrato=idContrato,viwerGerecnciadosDeContratosOpend=self)
         
 
 

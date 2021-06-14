@@ -14,6 +14,8 @@ class viwerNovoContrato(object):
     def __init__(self):
         super(viwerNovoContrato, self).__init__()
         
+         
+
         self.frame = wx.Frame(None, -1, 'Novo contrato', style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
         self.frame.SetDimensions(0,0,550,350)
         self.panel = wx.Panel(self.frame)

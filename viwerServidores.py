@@ -1,9 +1,10 @@
 import wx
 import modelServidor
 import geCDP
-import modelNovoServidor
 import modelFiscal
 import modelContrato
+import viwerNewServidores
+
 
 def main():
     gerenciarServidores()
@@ -14,85 +15,56 @@ class gerenciarServidores(object):
         super(gerenciarServidores, self).__init__()
         
         self.frame = wx.Frame(None, -1, 'Gerenciar servidores', style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
-        self.frame.SetDimensions(0,0,550,450)
+        self.frame.SetDimensions(0,0,650,450)
         self.panel = wx.Panel(self.frame)
         self.index = 0
         self.statusbar =  self.frame.CreateStatusBar(1)
 
         self.icon = wx.Icon(wx.Image('icon.png',wx.BITMAP_TYPE_PNG).ConvertToBitmap())
         self.frame.SetIcon(self.icon)
-        
-        wx.StaticText(self.panel, wx.ID_ANY, "Nome:", (25, 25))
-        self.txtNome = wx.TextCtrl(self.panel, wx.ID_ANY,"", (25, 50),size=(350, -1))
-        
-        wx.StaticText(self.panel, wx.ID_ANY, "ID funcional:", (25, 75))
-        self.txtIdFuncional = wx.TextCtrl(self.panel, wx.ID_ANY,"", (25, 100),size=(100, -1))
 
-        self.buttonIncluir = wx.Button(self.panel, wx.ID_ANY, 'Incluir', (400, 50),size=(100,-1))
-
-
-        wx.StaticText(self.panel, wx.ID_ANY, "Filtra", (25, 150))
-        self.txtFiltro = wx.TextCtrl(self.panel, wx.ID_ANY,"", (25, 175),size=(350, -1),style=wx.TE_PROCESS_ENTER)
+        wx.StaticText(self.panel, wx.ID_ANY, "Filtra", (25, 25))
+        self.txtFiltro = wx.TextCtrl(self.panel, wx.ID_ANY,"", (25, 50),size=(350, -1),style=wx.TE_PROCESS_ENTER)
 
         self.txtFiltro.Bind(wx.EVT_TEXT_ENTER, self.filtarServidor)
 
-        self.buttonFiltar = wx.Button(self.panel, wx.ID_ANY, 'Filtar', (400, 175),size=(100,-1))
+        self.buttonFiltar = wx.Button(self.panel, wx.ID_ANY, 'Filtar', (400, 50),size=(100,-1))
         
-        
+        self.buttonNovo = wx.Button(self.panel, wx.ID_ANY, 'Novo', (525, 50),size=(100,-1))
+
         # self.buttonAlterar = wx.Button(self.panel, wx.ID_ANY, 'Salvar', (525, 50),size=(100,-1))
-        self.buttonAlterar = wx.Button(self.panel, wx.ID_ANY, 'Alterar', (400, 75),size=(100,-1))
-        self.buttonExcluir = wx.Button(self.panel, wx.ID_ANY, 'Excluir', (400, 100),size=(100,-1))
+        self.buttonAlterar = wx.Button(self.panel, wx.ID_ANY, 'Alterar', (525, 85),size=(100,-1))
+        self.buttonExcluir = wx.Button(self.panel, wx.ID_ANY, 'Excluir', (525, 120),size=(100,-1))
         
-        self.listaDeServidores =  wx.ListCtrl(self.panel,style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_HRULES|wx.LC_AUTOARRANGE,size=(475,150), pos=(25,210))
+        self.listaDeServidores =  wx.ListCtrl(self.panel,style=wx.LC_REPORT|wx.SUNKEN_BORDER|wx.LC_HRULES|wx.LC_AUTOARRANGE,size=(475,250), pos=(25,100))
         self.listaDeServidores.InsertColumn(0,"ID",width=50)
         self.listaDeServidores.InsertColumn(1,"Nome",width=300)
         self.listaDeServidores.InsertColumn(2,"ID funcional",width=125)
 
-        self.buttonIncluir.Bind(wx.EVT_BUTTON, self.criarNovoServidor)
+        self.buttonNovo.Bind(wx.EVT_BUTTON, self.criarNovoServidor)
         self.buttonExcluir.Bind(wx.EVT_BUTTON, self.excluirServidor)
         self.buttonFiltar.Bind(wx.EVT_BUTTON, self.filtarServidor)
         self.buttonAlterar.Bind(wx.EVT_BUTTON, self.atulizarServidor)
 
-        self.listaDeServidores.Bind(wx.EVT_LIST_ITEM_ACTIVATED,self.carregarParaAtulizarServidor)
+        self.listaDeServidores.Bind(wx.EVT_LIST_ITEM_ACTIVATED,self.atulizarServidor)
 
 
         self.carregaDadosServidores()
 
         self.frame.Show()
         self.frame.Centre()
+        
     
-    
-    
-    def carregarParaAtulizarServidor(self,event):
-        item = self.listaDeServidores.GetFocusedItem()
-        if item != -1:
-            idServidor = self.listaDeServidores.GetItem(itemIdx=item, col=0).GetText()
-            for Servidor in geCDP.queryTabelaComWhere(tabela="SERVIDOR",coluna="id",dado=idServidor):
-                objServidor = modelServidor.servidor(Servidor)
-                self.txtNome.SetValue(objServidor.nome)
-                self.txtIdFuncional.SetValue(objServidor.idFuncional)
     
     def atulizarServidor(self,event):
         item = self.listaDeServidores.GetFocusedItem()
         if item != -1:
             idServidor = self.listaDeServidores.GetItem(itemIdx=item, col=0).GetText()
-            nome = self.txtNome.GetValue()
-            idFuncional = self.txtIdFuncional.GetValue()
+            nome = self.listaDeServidores.GetItem(itemIdx=item, col=1).GetText()
+            idFuncional = self.listaDeServidores.GetItem(itemIdx=item, col=2).GetText()
             
-            if nome != '' and idFuncional != '':
-
-                objServidor = modelServidor.servidor((idServidor,nome,idFuncional))
-                objServidor.atulizarNaTabela()
-                self.carregaDadosServidores()
-
-                self.txtNome.SetValue('')
-                self.txtIdFuncional.SetValue('')
-
-                dlgServidorAtulizado = wx.MessageDialog(None , "Servidor atulizado com sucesso.","Pronto", wx.OK| wx.ICON_INFORMATION)
-                dlgServidorAtulizado.ShowModal() 
-            else:
-                dlgServidorAtulizarErro = wx.MessageDialog(None , "Provavelmente o nome ou id funcinal estão em branco.","Pronto", wx.OK| wx.ICON_INFORMATION)
-                dlgServidorAtulizarErro.ShowModal()  
+            viwerNewServidores.newServidores(self,status="ATUALIZAR",idServidor=idServidor,nome=nome,idFuncional=idFuncional)
+              
 
     
     def filtarServidor(self,event):
@@ -150,20 +122,7 @@ class gerenciarServidores(object):
          
     
     def criarNovoServidor(self,event):
-        nome = self.txtNome.GetValue()
-        idFuncional = self.txtIdFuncional.GetValue()
-        
-        if nome != '' and idFuncional != '':
-            objServidor = modelNovoServidor.servidor((nome,idFuncional))
-            objServidor.inserirNovoServidorNaTabela()
-            self.txtNome.SetValue('')
-            self.txtIdFuncional.SetValue('')
-            self.carregaDadosServidores()
-            dlgServidorNovo = wx.MessageDialog(None , "Servidor criado com sucesso!","Pronto", wx.OK| wx.ICON_INFORMATION)
-            dlgServidorNovo.ShowModal()  
-        else:
-            dlgServidorNovoErro = wx.MessageDialog(None , "Provavelmente o nome ou id funcinal estão em branco.","Pronto", wx.OK| wx.ICON_INFORMATION)
-            dlgServidorNovoErro.ShowModal()  
+        viwerNewServidores.newServidores(self,status="NOVO",idServidor=None,nome=None,idFuncional=None)        
 
 
 

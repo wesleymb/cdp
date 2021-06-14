@@ -49,7 +49,7 @@ def gerarRelatorio(idContrato):
             <th>Status</th>
             </tr>""".format(contrato=Contrato.contrato,numeroDeProcesso=Contrato.numeroDeProcesso,empresa=Contrato.empresa)
         
-        nomeRelatorioHtml = 'relatorios\\{contrato}_{objeto}_{date}.html'.format(contrato=Contrato.empresa,objeto=Contrato.objeto,date=datetime.date.today())
+        nomeRelatorioHtml = 'relatorios\{contrato}_{date}.html'.format(contrato=Contrato.empresa,date=datetime.date.today())
         nomeRelatorioPdf = 'relatorios\\{contrato}_{objeto}_{date}.pdf'.format(contrato=Contrato.empresa,objeto=Contrato.objeto,date=datetime.date.today())
 
         with open(nomeRelatorioHtml, 'w+') as arqRelat:
@@ -136,7 +136,8 @@ def gerarRelatorio(idContrato):
             </html>""".format(horaEdata=datetime.datetime.now().strftime("%c")))
             arqRelat.close()
 
-        
+    
+        print("Passei")
         # self.dataDePagamento = self.listaDedados[2]
         # self.valor = self.listaDedados[3]
         # self.status = self.listaDedados[4]
@@ -145,4 +146,4 @@ def gerarRelatorio(idContrato):
 
 
 if __name__ == "__main__":
-    gerarRelatorio(idContrato=1)
+    gerarRelatorio(idContrato=5)

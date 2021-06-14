@@ -22,9 +22,11 @@ def main():
 
 class viwerGerenciar(object):
     """docstring for viwerGerenciar"""
-    def __init__(self,idContrato):
+    def __init__(self,idContrato,viwerGerecnciadosDeContratosOpend):
         super(viwerGerenciar, self).__init__()
         self.idContrato = idContrato
+        self.viwerGerecnciadosDeContratosOpend = viwerGerecnciadosDeContratosOpend
+
 
         self.frame = wx.Frame(None, -1, 'Contrato', style=wx.MINIMIZE_BOX | wx.SYSTEM_MENU | wx.CAPTION | wx.CLOSE_BOX | wx.CLIP_CHILDREN)
         self.frame.SetDimensions(0,0,1100,550)
@@ -177,6 +179,11 @@ class viwerGerenciar(object):
 
         dlg_box_p = wx.MessageDialog(None , "Dados atulizados com sucesso.","Pronto", wx.OK| wx.ICON_INFORMATION)
         dlg_box_p.ShowModal()
+        self.viwerGerecnciadosDeContratosOpend.txtFiltro.SetValue(self.contrato.GetValue())
+        
+        self.viwerGerecnciadosDeContratosOpend.comboFiltro.SetValue('Contrato') 
+        self.viwerGerecnciadosDeContratosOpend.carregaDadosContratosFiltrados(event=event)
+        self.viwerGerecnciadosDeContratosOpend.txtFiltro.SetValue('')
         self.frame.Destroy()   
 
     def fechar(self,event):
