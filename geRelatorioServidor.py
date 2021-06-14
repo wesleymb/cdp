@@ -50,7 +50,8 @@ class relatorio:
 
         # with open(os.path.join(os.environ['USERPROFILE'], 'Desktop','{nome}_{id}.html'.format(nome=self.nome,id=self.idFuncional)), 'a+') as arqRelat:
 
-        with open('relatorios\\{nome}_{id}.html'.format(nome=self.nome,id=self.idFuncional), 'w+') as arqRelat:
+        nomeDoRelatorio = 'relatorios\\{nome}_{id}.html'.format(nome=self.nome,id=self.idFuncional)
+        with open(nomeDoRelatorio, 'w+') as arqRelat:
                 arqRelat.write(html1)
                 arqRelat.write(html2)
                 for Fiscal in self.listaServidoresFiscal:
@@ -99,3 +100,5 @@ class relatorio:
                 </body>
                 </html>""".format(horaEdata=datetime.datetime.now().strftime("%c")))
                 arqRelat.close()
+        
+        os.startfile(nomeDoRelatorio)

@@ -137,7 +137,8 @@ def gerarRelatorio(idContrato):
             arqRelat.close()
 
     
-        print("Passei")
+        
+        os.startfile(nomeRelatorioHtml)
         # self.dataDePagamento = self.listaDedados[2]
         # self.valor = self.listaDedados[3]
         # self.status = self.listaDedados[4]
