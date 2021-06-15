@@ -68,16 +68,10 @@ class contrato:
             idContrato=self.id)
 
     def verificarPrazoDeVencimentoDeContrato(self):
-        prazoDeVencimento = (datetime.date.today() + relativedelta(month=3))
-        if prazoDeVencimento >= self.dataTerminoTipoDate:
+        prazoDeVencimento = (datetime.date.today() +datetime.timedelta(days=90))
+        
+        if  prazoDeVencimento >= self.dataTerminoTipoDate:
             return True
 
-if __name__ == "__main__":
-    listaDeDados = ['1','006/17',"E-17/0000/0000/0000",'impressora A3','Chada',"2020-12-22","2021-12-22","2021-01-10",'1','ATIVO']
-    contratoTeste = contrato(listaDedadosContrato=listaDeDados)
+# if __name__ == "__main__":
     
-    print(contratoTeste.idServidorGestor)
-    
-    # vencimentos = contratoTeste.gerarVencimentos()
-    # for dia in vencimentos:
-    # 	print(dia)
