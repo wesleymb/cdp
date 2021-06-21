@@ -1,10 +1,11 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+
 block_cipher = None
 
 
 a = Analysis(['..\\GDC.py'],
-             pathex=['C:\\Users\\Jericho\\Desktop\\cdp\\Compilado'],
+             pathex=['C:\\Users\\wesley.menezes\\Desktop\\Programas\\cdp\\Compilado'],
              binaries=[],
              datas=[],
              hiddenimports=[],
@@ -30,4 +31,4 @@ exe = EXE(pyz,
           upx=True,
           upx_exclude=[],
           runtime_tmpdir=None,
-          console=False , icon='..\\icon.ico')
+          console=False )
