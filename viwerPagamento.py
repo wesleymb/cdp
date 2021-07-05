@@ -7,14 +7,16 @@ import datetime
 
 
 def main():
-    gerenciarVencimentos(idPagamento=1, valor=None, dataDeVencimento=None, numeroDeProcesso=None, status=None)
+    pagamento(viwerOpened=None, idPagamento=1, valor=None, dataDeVencimento=None, numeroDeProcesso=None, status=None)
 
-class gerenciarVencimentos(object):
+class pagamento(object):
     """docstring for viwerGerenciar"""
-    def __init__(self,idPagamento,valor,dataDeVencimento,numeroDeProcesso,status):
-        super(gerenciarVencimentos, self).__init__()
+    def __init__(self, viwerOpened, idPagamento=None, idContrato=None,valor=None, dataDeVencimento=None, numeroDeProcesso=None, status='NOVO'):
+        super(pagamento, self).__init__()
+        self.viwerOpened = viwerOpened
         self.idPagamento = idPagamento
-        self.valor = valor
+        self.idContrato = idContrato
+        self.valorPagamento = valor
         self.dataDeVencimento = dataDeVencimento
         self.numeroDeProcesso = numeroDeProcesso
         self.status = status
@@ -47,17 +49,69 @@ class gerenciarVencimentos(object):
         self.comboStatus = wx.ComboBox(self.panel, wx.ID_ANY, pos = (200,125), choices = self.comboOpcoes, style=wx.CB_READONLY)
        
 
-        self.buttonIncluir = wx.Button(self.panel, wx.ID_ANY, 'Salvar', (75, 200),size=(100,-1))
+        self.buttonSalvar = wx.Button(self.panel, wx.ID_ANY, 'Salvar', (75, 200),size=(100,-1))
         self.buttonFechar = wx.Button(self.panel, wx.ID_ANY, 'Fechar', (200, 200),size=(100,-1))
 
+
+        self.buttonSalvar.Bind(wx.EVT_BUTTON, self.salvar)
+
         self.buttonFechar.Bind(wx.EVT_BUTTON, self.fechar)
+
+        if self.status !='NOVO':
+            self.carregarDados()
 
         self.frame.Show()
         self.frame.Centre()
 
+    
+    def carregarDados(self):
+        
+        self.valor.SetValue(self.valorPagamento)
+        self.calendarioVencimento.SetValue(self.dataDeVencimento)
+        self.numeroDeprocesso.SetValue(self.numeroDeProcesso)
+        self.comboStatus.SetValue(self.status)
+                
+        self.statusbar.SetStatusText("ID pagamento: {id}".format(id=self.idPagamento))
+
+    
     def fechar(self,event):
         self.frame.Destroy()
         
+
+    def salvar(self,event):
+        if self.status == 'NOVO':
+            dataDePagamento = self.calendarioVencimento.GetValue().FormatISODate()
+            valor = self.valor.GetValue()
+            status = self.comboStatus.GetValue()
+            numeroDeProcesso = self.numeroDeprocesso.GetValue()
+
+            Pagamento = modelPagamento.pagamento((self.idContrato,dataDePagamento,valor,status,numeroDeProcesso),tipo=2)
+            Pagamento.inserirNovoPagamentoManual()
+            
+           
+            dlgAtulizacao = wx.MessageDialog(None , "Pagamento incluido com sucesso","Pronto", wx.OK| wx.ICON_INFORMATION)
+            dlgAtulizacao.ShowModal()  
+            
+        
+        else:
+            
+            dataDePagamento = self.calendarioVencimento.GetValue().FormatISODate()
+            valor = self.valor.GetValue()
+            status = self.comboStatus.GetValue()
+            numeroDeProcesso = self.numeroDeprocesso.GetValue()
+
+            
+
+            Pagamento = modelPagamento.pagamento((self.idPagamento,self.idContrato,dataDePagamento,valor,status,numeroDeProcesso))
+            Pagamento.atulizarPagamento()
+
+            self.viwerOpened.carregarDoBanco()
+            
+            dlgAtulizacao = wx.MessageDialog(None , "Pagamento atulizado com sucesso","Pronto", wx.OK| wx.ICON_INFORMATION)
+            dlgAtulizacao.ShowModal()
+        
+        self.frame.Destroy()
+        self.viwerOpened.carregarDoBanco()
 
 if __name__ == '__main__':
     app = wx.App()

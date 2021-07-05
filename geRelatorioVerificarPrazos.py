@@ -54,7 +54,7 @@ def gerarRelatorioContratosComFuturoVencimento():
         
         arqRelat.close()
             
-
+        os.startfile(nomeRelatorioHtml)
 
 
 if __name__ == "__main__":
